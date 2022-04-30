@@ -1,0 +1,22 @@
+@import "variables";
+@import "basic";
+html {
+  padding: 0;
+  //padding-bottom: $footerHeight+ $footerPad;
+  //min-height: calc(100vh - #{$headerHeight + $headerPad+ $footerHeight+ $footerPad});
+  margin: 0;
+  background-color: map_get($colors, bk);
+  color: map_get($colors, font);
+  font-size: $fontSize;
+  line-height: $fontSize;
+}
+::cue {
+  font-size: 0.8em;
+  //line-height: 0.5em;
+}
+.pointer {
+  cursor: pointer;
+}
+.sysIcon {
+  cursor: pointer;
+}

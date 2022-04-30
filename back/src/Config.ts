@@ -20,7 +20,7 @@ export default {
         text: ['txt', 'html', 'json',],
         subtitle: ['vtt', 'ass', 'ssa', 'sub', 'srt', 'pjs',],
     } as { [key: string]: Array<any> },
-    fileRoot: process.cwd() + '/file/',
+    fileRoot: process.cwd() + '/../file/',
     webFileRoot: '/file/',
     webDavRoot: '/webdav/',
     // webFileRoot: 'http://sample.org/file/',

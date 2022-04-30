@@ -4,7 +4,7 @@
   "private"        : true,
   "scripts"        : {
 	"serve"       : "tsc && node dst/index.js --max_old_space_size=16384 --max-new-space-size=16384",
-	"serve_webdav": "tsc && node dst/webdav/index.js --max_old_space_size=16384 --max-new-space-size=16384",
+	"webdav": "tsc && node dst/webdav/index.js --max_old_space_size=16384 --max-new-space-size=16384",
 	"serve2_dev"  : "tsc && node dst/index_http2.js --max_old_space_size=16384 --max-new-space-size=16384",
 	"ffmpeg_dev"  : "tsc && node dst/ffmpeg.dev.js",
 	"import_dev"  : "tsc && node dst/importFiles.dev.js"

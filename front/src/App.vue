@@ -104,12 +104,12 @@ import FrameworkContent from '@/framework/Content.vue'
       const target = (e.target as HTMLElement);
       // console.info('toggleFocus:', target, target.tagName, e,);
       switch (target.tagName) {
-        default:
-          this.$store.state.focus.last = target;
-          break;
         case 'BUTTON':
           //focus会影响弹窗，但是这样你就无法选择任何一个按钮了
           target.blur();
+          break;
+        default:
+          this.$store.state.focus.last = target;
           break;
       }
     },

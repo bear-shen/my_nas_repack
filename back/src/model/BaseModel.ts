@@ -18,9 +18,9 @@ class BaseModel<field> extends ORM {
             res[i] = JSON.parse(JSON.stringify(res[i]));
             for (const key in res[i]) {
                 if (!Object.prototype.hasOwnProperty.call(res[i], key)) continue;
-                if (this[`_col_get_${key}` as keyof BaseModel<field>]) {
+                if (this[`_col_get_${key}` as string as keyof BaseModel<field>]) {
                     res[i][key] = (
-                        this[`_col_get_${key}` as keyof BaseModel<field>] as (input: any) => any
+                        this[`_col_get_${key}` as string as keyof BaseModel<field>] as (input: any) => any
                     )(res[i][key]);
                 }
             }
@@ -45,8 +45,8 @@ class BaseModel<field> extends ORM {
         kv = JSON.parse(JSON.stringify(kv)) as { [p: string]: any };
         for (const key in kv) {
             if (!Object.prototype.hasOwnProperty.call(kv, key)) continue;
-            if (this[`_col_set_${key}` as keyof BaseModel<field>])
-                kv[key] = (this[`_col_set_${key}` as keyof BaseModel<field>] as (input: any) => any)(kv[key]);
+            if (this[`_col_set_${key}` as string as keyof BaseModel<field>])
+                kv[key] = (this[`_col_set_${key}` as string as keyof BaseModel<field>] as (input: any) => any)(kv[key]);
         }
         return await super.update(kv);
     }
@@ -55,8 +55,8 @@ class BaseModel<field> extends ORM {
         kv = JSON.parse(JSON.stringify(kv)) as { [p: string]: any };
         for (const key in kv) {
             if (!Object.prototype.hasOwnProperty.call(kv, key)) continue;
-            if (this[`_col_set_${key}` as keyof BaseModel<field>])
-                kv[key] = (this[`_col_set_${key}` as keyof BaseModel<field>] as (input: any) => any)(kv[key]);
+            if (this[`_col_set_${key}` as string as keyof BaseModel<field>])
+                kv[key] = (this[`_col_set_${key}` as string as keyof BaseModel<field>] as (input: any) => any)(kv[key]);
         }
         return await super.insert(kv);
     }
@@ -66,8 +66,8 @@ class BaseModel<field> extends ORM {
         for (let i = 0; i < pkvs.length; i++) {
             for (const key in pkvs[i]) {
                 if (!Object.prototype.hasOwnProperty.call(pkvs[i], key)) continue;
-                if (this[`_col_set_${key}` as keyof BaseModel<field>])
-                    pkvs[i][key] = (this[`_col_set_${key}` as keyof BaseModel<field>] as (input: any) => any)(pkvs[i][key]);
+                if (this[`_col_set_${key}` as string as keyof BaseModel<field>])
+                    pkvs[i][key] = (this[`_col_set_${key}` as string as keyof BaseModel<field>] as (input: any) => any)(pkvs[i][key]);
             }
         }
         // console.info(kvs);

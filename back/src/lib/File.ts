@@ -120,12 +120,12 @@ async function setFile(
             }
         }
         fileData = {
-            hash: fileHash,
-            type: fileType,
+            hash  : fileHash,
+            type  : fileType,
             suffix: suffix,
-            path: rawRelPath,
-            meta: {},
-            size: size,
+            path  : rawRelPath,
+            meta  : {},
+            size  : size,
             status: tmpPath ? 1 : 0,
         };
         const insFileResult = await (new FileModel).insert(fileData);
@@ -182,16 +182,16 @@ async function setNode(
         id_parent: pid,
         // id_cover: number,
         // id_file: fid,
-        type: fileData.type,
-        title: fileName,
+        type       : fileData.type,
+        title      : fileName,
         description: '',
-        sort: 0,
+        sort       : 0,
         // status: hasBuildFile ? 1 : 2,
-        status: 1,
-        building: hasBuildFile ? 0 : 1,
-        list_node: parentNode ? [...parentNode.list_node, parentNode.id] : [0],
-        list_tag_id: [],
-        index_node: {},
+        status       : 1,
+        building     : hasBuildFile ? 0 : 1,
+        list_node    : parentNode ? [...parentNode.list_node, parentNode.id] : [0],
+        list_tag_id  : [],
+        index_node   : {},
         index_file_id: fileIdList,
     } as NodeCol;
     const insNodeResult = await (new NodeModel()).insert(nodeData);
@@ -201,14 +201,14 @@ async function setNode(
     if (!hasBuildFile) {
         //这边要个id，所以后面再写，语法很奇怪
         await (new QueueModel).insert({
-            type: 'file/build',
-            status: 1,
+            type   : 'file/build',
+            status : 1,
             payload: {id: nodeData.id},
         });
     }
     await (new QueueModel).insert({
-        type: 'index/node',
-        status: 1,
+        type   : 'index/node',
+        status : 1,
         payload: {id: nodeData.id},
     });
     return nodeData;
@@ -286,23 +286,88 @@ async function countFile(fileId: number) {
     return nodeCount ? nodeCount : 0;
 }
 
-async function moveFile(node: NodeCol, targetDir: NodeCol) {
-    await (new NodeModel()).where('id', node.id)
-        .update({
-            title: node.title,
-            id_parent: targetDir.id,
-            list_node: [...targetDir.list_node, targetDir.id]
-        });
+async function moveFile(node: NodeCol, targetDir: NodeCol, copy: boolean = false) {
+    if (copy) {
+        const nodeInsRes = await (new NodeModel())
+            .insert({
+                // id           : sub.id,
+                id_parent    : targetDir.id,
+                type         : node.type,
+                title        : node.title,
+                description  : node.description,
+                sort         : node.sort,
+                status       : node.status,
+                building     : node.building,
+                list_node    : [...targetDir.list_node, targetDir.id],
+                list_tag_id  : node.list_tag_id,
+                index_file_id: node.index_file_id,
+                index_node   : node.index_node,
+            });
+        if (node.building) {
+            if (node.type !== 'directory') {
+                await (new QueueModel).insert({
+                    type   : 'file/build',
+                    status : 1,
+                    payload: {id: nodeInsRes.insertId},
+                });
+            }
+            await (new QueueModel).insert({
+                type   : 'index/node',
+                status : 1,
+                payload: {id: nodeInsRes.insertId},
+            });
+        }
+    } else {
+        await (new NodeModel()).where('id', node.id)
+            .update({
+                title    : node.title,
+                id_parent: targetDir.id,
+                list_node: [...targetDir.list_node, targetDir.id]
+            });
+    }
+    if (node.type !== 'directory') return;
     const subs = await (new NodeModel).whereRaw('find_in_set( ? , list_node)', node.id).select();
     if (!subs || !subs.length) return;
     for (const sub of subs) {
         const pIndex = sub.list_node.indexOf(node.id);
         if (pIndex === -1) continue;
         const targetNodeList = [...targetDir.list_node, targetDir.id, ...sub.list_node.slice(pIndex)];
-        await (new NodeModel()).where('id', sub.id)
-            .update({
-                list_node: targetNodeList
-            });
+        if (copy) {
+            const nodeInsRes = await (new NodeModel())
+                .insert({
+                    // id           : sub.id,
+                    id_parent    : sub.id_parent,
+                    type         : sub.type,
+                    title        : sub.title,
+                    description  : sub.description,
+                    sort         : sub.sort,
+                    status       : sub.status,
+                    building     : sub.building,
+                    list_node    : targetNodeList,
+                    list_tag_id  : sub.list_tag_id,
+                    index_file_id: sub.index_file_id,
+                    index_node   : sub.index_node,
+                });
+            if (sub.building) {
+                if (sub.type !== 'directory') {
+                    await (new QueueModel).insert({
+                        type   : 'file/build',
+                        status : 1,
+                        payload: {id: nodeInsRes.insertId},
+                    });
+                }
+                await (new QueueModel).insert({
+                    type   : 'index/node',
+                    status : 1,
+                    payload: {id: nodeInsRes.insertId},
+                });
+            }
+        } else {
+            await (new NodeModel()).where('id', sub.id)
+                .update({
+                    list_node: targetNodeList
+                });
+        }
     }
 }
 

@@ -76,7 +76,7 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
     }
     if (!res.writableEnded) res.end();
 });
-server.listen(8091);
+server.listen(Config.webdav_port);
 
 function getRequestBody(req: IncomingMessage): Promise<Buffer> {
     return new Promise((resolve: any) => {

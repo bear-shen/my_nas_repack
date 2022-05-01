@@ -1,6 +1,7 @@
 export default {
     // pathPrefix: '/api',
     port: 8090,
+    webdav_port: 8095,
     auth: {
         '^/api/[^/]+?/[^/]+?$': [1],
         '^/api/user/login$': [0],
@@ -59,7 +60,18 @@ export default {
             allow_rate: 10000 * 1000,
             allow_container: ['mp4', 'ogg', 'webm', 'm4a',],
             //
-            cur_lib: 'h264_nvenc',
+            priority_audio: [
+                'cht', 'chs', 'chin', 'zh-', '中',
+                'jpn', 'jps', 'japan', 'jp', '日',
+                'us', 'en', '英',
+            ],
+            priority_subtitle: [
+                'cht', 'chs', 'chin', 'zh-', '中',
+                'jpn', 'jps', 'japan', 'jp', '日',
+                'us', 'en', '英',
+            ],
+            //
+            cur_lib: 'libx264',
             libx264: {
                 codec_lib: 'libx264',
                 pixFmt: 'yuv422p10',

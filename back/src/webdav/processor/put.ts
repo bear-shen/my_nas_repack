@@ -12,8 +12,8 @@ import {Buffer} from "buffer";
 
 async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) {
     const dirOffset = req.url.replace(/\/$/ig, '').lastIndexOf('/');
-    const dirPath = req.url.substr(0, dirOffset);
-    const fileName = decodeURIComponent(req.url.substr(dirOffset + 1));
+    const dirPath = req.url.substring(0, dirOffset);
+    const fileName = decodeURIComponent(req.url.substring(dirOffset + 1));
     console.info(req.url);
     //
     const url = new URL(dirPath, `http://${req.headers.host}`);

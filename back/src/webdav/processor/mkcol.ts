@@ -13,7 +13,7 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
     console.info(url.pathname, config.webDavRoot, rootPos);
     if (rootPos === -1) return Lib.respCode(res, 404);
     //
-    const dirPath = url.pathname.substr(rootPos + config.webDavRoot.length);
+    const dirPath = url.pathname.substring(rootPos + config.webDavRoot.length);
     Lib.mkdir(dirPath);
     return Lib.respCode(res, 201);
 }

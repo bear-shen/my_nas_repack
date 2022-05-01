@@ -7,7 +7,7 @@ import QueueModel from "../model/QueueModel";
 
 async function getCurNode(url: URL): Promise<NodeCol | boolean> {
     const rootPos = url.pathname.indexOf(config.webDavRoot);
-    const dirPath = url.pathname.substr(rootPos + config.webDavRoot.length);
+    const dirPath = url.pathname.substring(rootPos + config.webDavRoot.length);
     const dirTitleArr = [] as string[];
     if (dirPath.length) {
         dirPath.split('/').forEach(p => {

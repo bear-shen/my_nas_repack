@@ -263,7 +263,7 @@ const Util = {
         cStart = cStart + cName.length + 1;
         let cEnd = document.cookie.indexOf(';', cStart);
         if (cEnd === -1) cEnd = document.cookie.length;
-        return unescape(document.cookie.substring(cStart, cEnd))
+        return unescape(document.cookie.substring(cStart, cStart+cEnd))
       }
     }
     return ''
@@ -277,7 +277,7 @@ const Util = {
     const url = location.search; // 获取url中"?"符后的字串
     const theRequest: { [key: string]: string } = {};
     if (url.indexOf('?') !== -1) {
-      const str = url.substr(1);
+      const str = url.substring(1);
       const strs = str.split('&');
       for (let i = 0; i < strs.length; i++) {
         const pair = strs[i].split('=');
@@ -351,7 +351,7 @@ const Util = {
   },
   getUrlParam: function (name: string): string | null {
     const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)'); // 构造一个含有目标参数的正则表达式对象
-    const r = window.location.search.substr(1).match(reg); // 匹配目标参数
+    const r = window.location.search.substring(1).match(reg); // 匹配目标参数
     if (r != null) return unescape(r[2]);
     return null; // 返回参数值
   },

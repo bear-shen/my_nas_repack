@@ -16,11 +16,11 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
     if (!curNode) return Lib.respCode(res, 404);
     //
     const rootPos = targetUrl.pathname.indexOf(config.webDavRoot);
-    const targetNodePath = targetUrl.pathname.substr(rootPos + config.webDavRoot.length).replace(/\/$/ig, '');
+    const targetNodePath = targetUrl.pathname.substring(rootPos + config.webDavRoot.length).replace(/\/$/ig, '');
     // console.info(targetNodePath);
     const targetDirOffset = targetNodePath.lastIndexOf('/');
-    const targetDirPath = targetNodePath.substr(0, targetDirOffset);
-    const targetFileName = decodeURIComponent(targetNodePath.substr(targetDirOffset + 1));
+    const targetDirPath = targetNodePath.substring(0, targetDirOffset);
+    const targetFileName = decodeURIComponent(targetNodePath.substring(targetDirOffset + 1));
     // console.info(targetDirPath, targetFileName);
     const targetDir = await Lib.mkdir(targetDirPath);
     //

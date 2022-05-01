@@ -59,7 +59,7 @@ export default {
             // allow_rate: 4000 * 1000,
             allow_rate: 10000 * 1000,
             allow_container: ['mp4', 'ogg', 'webm', 'm4a',],
-            //
+            // @todo 这个处理起来太麻烦了。。。反正webdav做好了，手动处理吧
             priority_audio: [
                 'cht', 'chs', 'chin', 'zh-', '中',
                 'jpn', 'jps', 'japan', 'jp', '日',

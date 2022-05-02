@@ -22,8 +22,8 @@ const ref = {
     'PUT': put.process,
     'MKCOL': mkcol.process,
     'DELETE': deleteFunc.process,
-    //
     'COPY': copy.process,
+    //
     'HEAD': head.process,
     'LOCK': lock.process,
     'POST': post.process,

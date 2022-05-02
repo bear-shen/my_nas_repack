@@ -9,16 +9,16 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
         [
             'OPTIONS',
             'GET',
-            'HEAD',
-            'POST',
+            // 'HEAD',
+            // 'POST',
             'DELETE',
-            'TRACE',
+            // 'TRACE',
             'PROPFIND',
-            'PROPPATCH',
+            // 'PROPPATCH',
             'COPY',
             'MOVE',
-            'LOCK',
-            'UNLOCK',
+            // 'LOCK',
+            // 'UNLOCK',
             'PUT',
         ].join('')
     );

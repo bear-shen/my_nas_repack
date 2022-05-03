@@ -71,6 +71,30 @@
     >
     </audio-browser>
   </template>
+  <template v-else-if="item.type==='pdf'">
+    <pdf-browser
+      :item="item"
+      :modal-meta="modalMeta"
+      :browser-meta="{
+  navi: {
+    next: next,
+    prev: prev,
+    refresh: refresh,
+  },
+  act: {
+    detail: actDetail,
+    download: actDownload,
+    share: actShare,
+  },
+  status: {
+    detail:show_detail,
+    next:has_next,
+    prev:has_prev,
+  },
+      }"
+    >
+    </pdf-browser>
+  </template>
   <!--  text 这个要做的话就没完了，什么保存啊查看啊上传啊另存为啊都要做。。。 -->
   <!--  <template v-else-if="item.type==='text'">
       <browser-base        :item="item"        :modal-meta="modalMeta"
@@ -118,7 +142,7 @@
     >
       <template v-slot:browser_content>
         <div class="browser_default_content">
-<!--          <iframe :src="item.file.path_raw"></iframe>-->
+          <!--          <iframe :src="item.file.path_raw"></iframe>-->
           <p :class="['listIcon', `listIcon_file_${item.type}`,]"></p>
           <p class="title">{{ item.title }}</p>
           <p>{{ item.type }}</p>
@@ -171,6 +195,7 @@ import fileListDemo from '@/demo/getFileList';
 import ImageBrowser from './browser/Image.vue';
 import VideoBrowser from './browser/Video.vue';
 import AudioBrowser from './browser/Audio.vue';
+import PdfBrowser from './browser/Pdf.vue';
 import BrowserBase from '@/modal/browser/Base.vue';
 
 @Options({
@@ -189,6 +214,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
     ImageBrowser,
     VideoBrowser,
     AudioBrowser,
+    PdfBrowser,
     BrowserBase,
   },
   data         : function () {

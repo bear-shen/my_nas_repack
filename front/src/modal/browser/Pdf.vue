@@ -66,7 +66,9 @@ import BrowserBase from './Base.vue';
     BrowserBase
   },
   data         : function () {
-    return {};
+    return {
+      show: true,
+    };
   },
   created      : function () {
     console.debug('MediaBrowser:', this, this.input);

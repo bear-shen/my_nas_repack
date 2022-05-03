@@ -11,6 +11,7 @@ const config = {
     // 'archive',
     'image',
     'folder',
+    'pdf',
   ],
 }
 

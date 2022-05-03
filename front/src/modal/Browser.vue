@@ -118,11 +118,12 @@
     >
       <template v-slot:browser_content>
         <div class="browser_default_content">
+<!--          <iframe :src="item.file.path_raw"></iframe>-->
           <p :class="['listIcon', `listIcon_file_${item.type}`,]"></p>
           <p class="title">{{ item.title }}</p>
           <p>{{ item.type }}</p>
           <p>{{ item.description }}</p>
-          <p>{{ $util.kmgt(item.file?item.file.size:0) }}</p>
+          <p>{{ $util.kmgt(item.file ? item.file.size : 0) }}</p>
           <p>{{ item.time_update }}</p>
         </div>
       </template>
@@ -132,9 +133,14 @@
 
 <style lang="scss">
 .file_browser {
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
   .browser_default_content {
     text-align: center;
     width: 100%;
+    //height: 100%;
     .listIcon {
       font-size: $fontSize*5;
       line-height: $fontSize*5;
@@ -168,8 +174,8 @@ import AudioBrowser from './browser/Audio.vue';
 import BrowserBase from '@/modal/browser/Base.vue';
 
 @Options({
-  emits: ['close'],
-  props: {
+  emits        : ['close'],
+  props        : {
     modalMeta: Object as unknown as ModalMeta
     // input: Object as unknown as {
     //   item: Node,
@@ -179,24 +185,24 @@ import BrowserBase from '@/modal/browser/Base.vue';
     //模态框的DOM`
     // frame: Object as unknown as HTMLElement,
   },
-  components: {
+  components   : {
     ImageBrowser,
     VideoBrowser,
     AudioBrowser,
     BrowserBase,
   },
-  data: function () {
+  data         : function () {
     return {
-      list: [] as Array<Node>,
-      cur: 0,
-      item: false as unknown as Node,
+      list       : [] as Array<Node>,
+      cur        : 0,
+      item       : false as unknown as Node,
       show_detail: false,
-      has_next: false,
-      has_prev: false,
-      hide_type: ['directory', 'subtitle'],
+      has_next   : false,
+      has_prev   : false,
+      hide_type  : ['directory', 'subtitle'],
     };
   },
-  created: function () {
+  created      : function () {
     console.debug('Browser:created:', this, (this.modalMeta as ModalMeta).data);
     // console.debug(this.$store);
     // if (!this.modalMeta.modal.layout.resized) {
@@ -205,35 +211,35 @@ import BrowserBase from '@/modal/browser/Base.vue';
     // }
     this.$store.commit('browser/load');
   },
-  watch: {},
-  mounted: function () {
+  watch        : {},
+  mounted      : function () {
     console.debug('Browser:mounted:', this, (this.modalMeta as ModalMeta).data);
     //
     /*setTimeout(() => {
-      //toggleFocus函数因为写在app里，所以比翻页执行的晚，此时需要手工重定位focus
-      //这么看focus其实写的很废物。。。
-      this.$store.state.focus.last = document.getElementById(`modal_item_${
-        (this.modalMeta as ModalMeta).modal.nid
-      }`);
-    }, 100);
-    const curIndex = (this.modalMeta as ModalMeta).modal.nid;
-    this.$store.commit('event/register', {
-      action: 'keyup',
-      key: `hotkey_browser_frame_${curIndex}`,
-      callback: this.hotkeyMap.bind(this)
-    });*/
+     //toggleFocus函数因为写在app里，所以比翻页执行的晚，此时需要手工重定位focus
+     //这么看focus其实写的很废物。。。
+     this.$store.state.focus.last = document.getElementById(`modal_item_${
+     (this.modalMeta as ModalMeta).modal.nid
+     }`);
+     }, 100);
+     const curIndex = (this.modalMeta as ModalMeta).modal.nid;
+     this.$store.commit('event/register', {
+     action: 'keyup',
+     key: `hotkey_browser_frame_${curIndex}`,
+     callback: this.hotkeyMap.bind(this)
+     });*/
   },
   beforeUnmount: function () {
     console.debug('Browser:beforeUnmount:', this, (this.modalMeta as ModalMeta).data);
     //
     /*const curIndex = (this.modalMeta as ModalMeta).modal.nid;
-    this.$store.commit('event/release', {
-      action: 'keyup',
-      key: `hotkey_browser_frame_${curIndex}`,
-    });*/
+     this.$store.commit('event/release', {
+     action: 'keyup',
+     key: `hotkey_browser_frame_${curIndex}`,
+     });*/
   },
-  methods: {
-    fetch: async function () {
+  methods      : {
+    fetch    : async function () {
       const query = JSON.parse(JSON.stringify((this.modalMeta as ModalMeta).data.query));
       console.debug('FileBrowser:Base:fetch', query);
       query.total = 1;
@@ -256,7 +262,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
         }
       }
     },
-    init: function () {
+    init     : function () {
       const modal = (this.modalMeta as ModalMeta).modal;
       // modal.layout.resized = true;
       const targetW = 480;
@@ -268,14 +274,14 @@ import BrowserBase from '@/modal/browser/Base.vue';
         {
           defW: targetW,
           defH: targetH,
-          w: targetW,
-          h: targetH,
-          x: (iw - targetW) / 2,
-          y: (ih - targetH) / 2,
+          w   : targetW,
+          h   : targetH,
+          x   : (iw - targetW) / 2,
+          y   : (ih - targetH) / 2,
         }
       );
     },
-    next: async function () {
+    next     : async function () {
       //遇到一个问题，现在视频和普通文件是写一起的，
       //但是视频又要支持各种随机播放循环播放之类的东西
       //所以在考虑设定成queue模式下不支持循环，且切换到普通文件之后重置为queue
@@ -291,7 +297,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
       this.has_prev = true;
       this.nextIndex();
     },
-    prev: async function () {
+    prev     : async function () {
       console.debug('FileBrowser:prev');
       const index = this.prevIndex();
       if (index === -1) return;
@@ -301,7 +307,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
       this.has_next = true;
       this.prevIndex();
     },
-    refresh: function () {
+    refresh  : function () {
       this.nextIndex();
       this.prevIndex();
     },
@@ -408,28 +414,28 @@ import BrowserBase from '@/modal/browser/Base.vue';
       }
     },
     /*chkNext: function () {
-      let index = -1;
-      for (let i = this.cur + 1; i < this.list.length; i++) {
-        if (this.hide_type.indexOf(this.list[i].type)!==-1) continue;
-        index = i;
-        break;
-      }
-      this.has_next = index !== -1;
-      console.debug('chkNext', index, this.has_next);
-      return index;
-    },
-    chkPrev: function () {
-      let index = -1;
-      for (let i = this.cur - 1; i > -1; i--) {
-        if (this.hide_type.indexOf(this.list[i].type)!==-1) continue;
-        index = i;
-        break;
-      }
-      this.has_prev = index !== -1;
-      console.debug('chkPrev', index, this.has_prev);
-      return index;
-    },*/
-    actDetail: async function (e: MouseEvent) {
+     let index = -1;
+     for (let i = this.cur + 1; i < this.list.length; i++) {
+     if (this.hide_type.indexOf(this.list[i].type)!==-1) continue;
+     index = i;
+     break;
+     }
+     this.has_next = index !== -1;
+     console.debug('chkNext', index, this.has_next);
+     return index;
+     },
+     chkPrev: function () {
+     let index = -1;
+     for (let i = this.cur - 1; i > -1; i--) {
+     if (this.hide_type.indexOf(this.list[i].type)!==-1) continue;
+     index = i;
+     break;
+     }
+     this.has_prev = index !== -1;
+     console.debug('chkPrev', index, this.has_prev);
+     return index;
+     },*/
+    actDetail  : async function (e: MouseEvent) {
       //穿透给base用的
 
       // console.info(e.type);
@@ -438,7 +444,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
         case 'click':
           this.$store.commit('browser/set',
             {
-              key: 'lock_detail',
+              key  : 'lock_detail',
               value: !this.$store.state.browser.config.lock_detail
             }
           );
@@ -468,10 +474,10 @@ import BrowserBase from '@/modal/browser/Base.vue';
       console.debug('FileBrowser:download');
       window.open(this.item.file.path_raw, '_blank');
     },
-    actShare: async function () {
+    actShare   : async function () {
       console.debug('FileBrowser:share');
     },
-    close: async function () {
+    close      : async function () {
       this.$emit('close');
     },
   },

@@ -1,8 +1,8 @@
 @font-face {
   font-family: "listIcon"; /* Project id 1893485 */
-  src: url('iconfont.woff2?t=1648314509643') format('woff2'),
-       url('iconfont.woff?t=1648314509643') format('woff'),
-       url('iconfont.ttf?t=1648314509643') format('truetype');
+  src: url('iconfont.woff2?t=1651564756141') format('woff2'),
+       url('iconfont.woff?t=1651564756141') format('woff'),
+       url('iconfont.ttf?t=1651564756141') format('truetype');
 }
 
 .listIcon {
@@ -41,7 +41,7 @@
   content: "\e695";
 }
 
-.listIcon_pdf:before {
+.listIcon_file_pdf:before {
   content: "\e696";
 }
 

@@ -57,7 +57,7 @@
     {
       "icon_id": "9976590",
       "name": "pdf文件",
-      "font_class": "pdf",
+      "font_class": "file_pdf",
       "unicode": "e696",
       "unicode_decimal": 59030
     },

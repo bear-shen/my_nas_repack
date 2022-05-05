@@ -17,6 +17,7 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
     const dirNode = await Lib.getCurNode(url) as NodeCol;
     console.info(dirNode);
     if (!dirNode) return Lib.respCode(res, 404);
+    if (!dirNode.index_file_id || !dirNode.index_file_id.raw) return Lib.respCode(res, 204);
     //
     const curFile = await (new FileModel).where('id', dirNode.index_file_id.raw).first();
     console.info(curFile);

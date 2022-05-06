@@ -2,6 +2,8 @@
 $root  = $argv[1];
 $dirLs = scandir($root);
 //
+// ignore: Various よろず
+//
 $nmCount = [];
 foreach ($dirLs as $dir) {
     if ($dir === '.' || $dir === '..') continue;

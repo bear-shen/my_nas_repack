@@ -21,12 +21,12 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
     let output = '';
     const outputData = getBase();
     /*if (body) {
-        const content = convert.xml2js(body, {compact: true});
-        console.info(content);
-        outputData['D:multistatus']['D:response'].push(respErr(url.pathname, '404 Not Found'));
-        //body不知道怎么处理
-        return resp(res, outputData);
-    }*/
+     const content = convert.xml2js(body, {compact: true});
+     console.info(content);
+     outputData['D:multistatus']['D:response'].push(respErr(url.pathname, '404 Not Found'));
+     //body不知道怎么处理
+     return resp(res, outputData);
+     }*/
     const rootPos = url.pathname.indexOf(config.webDavRoot);
     console.info(url.pathname, config.webDavRoot, rootPos);
     if (rootPos === -1) {
@@ -91,9 +91,9 @@ function resp(res: ServerResponse, outputData: ElementCompact) {
 
 function getBase(): ElementCompact {
     return {
-        _declaration: {_attributes: {version: "1.0", encoding: "utf-8"}},
+        _declaration   : {_attributes: {version: "1.0", encoding: "utf-8"}},
         'D:multistatus': {
-            _attributes: {'xmlns:D': 'DAV:',},
+            _attributes : {'xmlns:D': 'DAV:',},
             'D:response': [
                 // {
                 //     _attributes: {'xmlns:lp1': 'DAV:', 'xmlns:lp2': 'http://apache.org/dav/props/',},
@@ -117,8 +117,8 @@ function getBase(): ElementCompact {
 
 function respErr(path: string, msg: string): ElementCompact {
     return {
-        _attributes: {'xmlns:g0': 'DAV:',},
-        'D:href': {_text: path,},
+        _attributes : {'xmlns:g0': 'DAV:',},
+        'D:href'    : {_text: path,},
         'D:propstat': {
             // 'D:prop': {
             //     'g0:quota-available-bytes': {},
@@ -148,13 +148,13 @@ function buildRespNode(url: URL, node: NodeCol, withPathName: boolean = true, fi
             break;
     }
     const target = {
-        _attributes: {'xmlns:lp1': 'DAV:', 'xmlns:lp2': 'http://apache.org/dav/props/',},
-        'D:href': {_text: `${url.pathname}${withPathName ? encodeURIComponent(node.title) : ''}`,},
+        _attributes : {'xmlns:lp1': 'DAV:', 'xmlns:lp2': 'http://apache.org/dav/props/',},
+        'D:href'    : {_text: `${url.pathname}${withPathName ? encodeURIComponent(node.title) : ''}`,},
         'D:propstat': {
-            'D:prop': {
-                'lp1:creationdate': {_text: node.time_create},
+            'D:prop'  : {
+                'lp1:creationdate'   : {_text: node.time_create},
                 'lp1:getlastmodified': {_text: node.time_update},
-                'lp1:getetag': {_text: `"1000-${node.id}${(new Date()).valueOf()}"`},
+                'lp1:getetag'        : {_text: `"1000-${node.id}${(new Date()).valueOf()}"`},
                 // 'D:supportedlock': {
                 //     'D:lockentry': [{
                 //         'D:lockscope': {
@@ -175,9 +175,9 @@ function buildRespNode(url: URL, node: NodeCol, withPathName: boolean = true, fi
                 // 'D:lockdiscovery': {},
                 // 'D:getcontenttype': {_text: 'httpd/unix-directory'},
                 // 'lp1:resourcetype': {'D:collection': {}},
-                'lp2:executable': {_text: 'F'},
-                'lp1:resourcetype': resourceType,
-                'D:getcontenttype': {_text: mime},
+                'lp2:executable'      : {_text: 'F'},
+                'lp1:resourcetype'    : resourceType,
+                'D:getcontenttype'    : {_text: mime},
                 'lp1:getcontentlength': {_text: file ? file.size : 0},
             },
             'D:status': {_text: 'HTTP/1.1 200 OK',},

@@ -263,7 +263,7 @@ const Util = {
         cStart = cStart + cName.length + 1;
         let cEnd = document.cookie.indexOf(';', cStart);
         if (cEnd === -1) cEnd = document.cookie.length;
-        return unescape(document.cookie.substring(cStart, cStart+cEnd))
+        return unescape(document.cookie.substring(cStart, cStart + cEnd))
       }
     }
     return ''
@@ -273,7 +273,7 @@ const Util = {
    * 空字段之类的没有处理
    * 返回k:v
    * */
-  getRequests: function (): { [key: string]: string } {
+  getRequests  : function (): { [key: string]: string } {
     const url = location.search; // 获取url中"?"符后的字串
     const theRequest: { [key: string]: string } = {};
     if (url.indexOf('?') !== -1) {
@@ -305,7 +305,7 @@ const Util = {
   /**
    * trim方法，使用正则，默认为\s
    * */
-  trim: function (string: string, trimChar?: string): string {
+  trim  : function (string: string, trimChar?: string): string {
     if (!trimChar) trimChar = '\\s';
     const reg = '^[' + trimChar + ']*(.*?)[' + trimChar + ']*$';
     // console.warn(reg);
@@ -326,17 +326,17 @@ const Util = {
     function escapeDBC(s: string) {
       if (!s) return '';
       /*if (window.ActiveXObject) {
-// 如果是 ie, 使用 vbscript
-        // eslint-disable-next-line no-implied-eval
-        execScript('SetLocale "zh-cn"', 'vbscript');
-        return s.replace(
-          /[\d\D]/g, function ($0) {
-            window.vbsval = '';
-            execScript('window.vbsval=Hex(Asc("' + $0 + '"))', 'vbscript');
-            return '%' + window.vbsval.slice(0, 2) + '%' + window.vbsval.slice(-2);
-          }
-        );
-      }*/
+       // 如果是 ie, 使用 vbscript
+       // eslint-disable-next-line no-implied-eval
+       execScript('SetLocale "zh-cn"', 'vbscript');
+       return s.replace(
+       /[\d\D]/g, function ($0) {
+       window.vbsval = '';
+       execScript('window.vbsval=Hex(Asc("' + $0 + '"))', 'vbscript');
+       return '%' + window.vbsval.slice(0, 2) + '%' + window.vbsval.slice(-2);
+       }
+       );
+       }*/
 // 其它浏览器利用浏览器对请求地址自动编码的特性
       img.src = 'nothing.action?separator=' + s;
       return img.src.split('?separator=').pop();
@@ -349,7 +349,7 @@ const Util = {
       }
     );
   },
-  getUrlParam: function (name: string): string | null {
+  getUrlParam : function (name: string): string | null {
     const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)'); // 构造一个含有目标参数的正则表达式对象
     const r = window.location.search.substring(1).match(reg); // 匹配目标参数
     if (r != null) return unescape(r[2]);
@@ -378,7 +378,7 @@ const Util = {
     }
     return Math.floor(from + seed * (to - from));
   },
-  kmgt: function (num: number | string, decimal?: number): string {
+  kmgt   : function (num: number | string, decimal?: number): string {
     if (typeof num !== 'number') num = parseFloat(num);
     if (!decimal) decimal = 0;
     //
@@ -398,6 +398,19 @@ const Util = {
     }
     return (minus ? '-' : '') + refNum;
   },
+  /*filter : function <T>(arr: T[], match: (from: T) => boolean): T[] {
+    const target = [] as T[];
+    arr.forEach(item => {
+      let ifMatch = false;
+      if (match) {
+        ifMatch = match(item);
+      } else {
+        ifMatch = !!item;
+      }
+      if (ifMatch) target.push(item);
+    });
+    return target;
+  },*/
   // dom////////////////////////////////////////////////////////////////////////////////////////
   nodeOffsetX: function (ele: HTMLElement): number {
     // console.debug(ele, ele.offsetLeft);
@@ -416,14 +429,14 @@ const Util = {
     return t;
   },
   // other////////////////////////////////////////////////////////////////////////////////////////
-  isEmpty: function (object: { [key: string]: any }): boolean {
+  isEmpty    : function (object: { [key: string]: any }): boolean {
     for (const k in object) {
       if (!Object.prototype.hasOwnProperty.call(object, k)) continue;
       return true;
     }
     return false;
   },
-  copyObject: function (object: { [key: string]: any }): { [key: string]: any } {
+  copyObject : function (object: { [key: string]: any }): { [key: string]: any } {
     const target: { [key: string]: any } = {};
     for (const k in object) {
       if (!Object.prototype.hasOwnProperty.call(object, k)) continue;
@@ -431,7 +444,7 @@ const Util = {
     }
     return target;
   },
-  copy: function (object: { [key: string]: any }): { [key: string]: any } {
+  copy       : function (object: { [key: string]: any }): { [key: string]: any } {
     return JSON.parse(JSON.stringify(object));
   },
   toggleClass: function (element: Element, className: string): void {

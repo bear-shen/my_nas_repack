@@ -1,4 +1,5 @@
 <?php
+// doujin name -> 作品合集 author author
 $fromRoot      = 'F:\\newdown\\erohun';
 $toRoot        = 'F:\\newdown\\erohun_proc';
 $targetDirInfo = [];

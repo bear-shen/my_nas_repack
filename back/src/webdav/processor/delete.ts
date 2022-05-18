@@ -4,9 +4,10 @@ import FileLib from "../../lib/File";
 import {Buffer} from "buffer";
 import Lib from "../Lib";
 import NodeModel from "../../model/NodeModel";
+import {ReadStream} from "fs";
 
-async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) {
-    console.info('proc here, req:', body);
+async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
+    // console.info('proc here, req:', body);
     const url = new URL(req.url, `http://${req.headers.host}`);
     //@see FileController/delete
     const node = await Lib.getCurNode(url) as NodeCol;

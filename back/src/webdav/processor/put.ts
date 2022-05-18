@@ -9,8 +9,9 @@ import * as fsNP from "fs";
 import Config from "../../Config";
 import QueueModel from "../../model/QueueModel";
 import {Buffer} from "buffer";
+import {ReadStream} from "fs";
 
-async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) {
+async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
     const dirOffset = req.url.replace(/\/$/ig, '').lastIndexOf('/');
     const dirPath = req.url.substring(0, dirOffset);
     const fileName = decodeURIComponent(req.url.substring(dirOffset + 1));
@@ -23,6 +24,7 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
     let suffix = FileLib.getSuffixByName(fileName);
     //types: 'audio','video','image','binary','text'
     let fileType = FileLib.getTypeBySuffix(suffix);
+    console.info(`get file ${fileType}:${suffix}:${fileName}`)
     //
     let ifNode = await (new NodeModel).where('id_parent', dirNode.id).where('title', fileName).first();
     if (ifNode && ifNode.type === 'directory')
@@ -74,14 +76,15 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
     if (!body)
         return Lib.respCode(res, 204);
     //
-    const tmpFilePath = `${Config.fileRoot}temp/webdav/${(new Date).valueOf()}`;
-    await FileLib.makeFileDir(tmpFilePath, false);
-    await fs.writeFile(tmpFilePath, body);
-    console.info(`write to :${tmpFilePath}`);
-    const rs = fsNP.createReadStream(tmpFilePath);
+    // const tmpFilePath = `${Config.fileRoot}temp/webdav/${(new Date).valueOf()}`;
+    // await FileLib.makeFileDir(tmpFilePath, false);
+    // await fs.writeFile(tmpFilePath, body);
+    // console.info(`write to :${tmpFilePath}`);
+    // const rs = fsNP.createReadStream(tmpFilePath);
     //@see setFile
-    const fileHash = await FileLib.getFileMD5(rs);
-    rs.close();
+    const fileHash = await FileLib.getFileMD5(body);
+    const tmpFilePath = body.path as string;
+
     const rawRelPath = FileLib.makePath('rel', fileType, fileHash, suffix);
     const rawPath = FileLib.makePath('local', fileType, fileHash, suffix);
     //查看是否重复
@@ -100,12 +103,13 @@ async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) 
             suffix: suffix,
             path: rawRelPath,
             meta: {},
-            size: body.length,
+            size: Number.parseInt(req.headers["content-length"]),
             status: 1,
         } as FileCol;
         const insFileResult = await (new FileModel).insert(ifFile);
         ifFile.id = insFileResult.insertId;
     }
+    body.close();
     if (ifNode.index_file_id.raw === ifFile.id)
         return Lib.respCode(res, 204);
     //更新文件节点

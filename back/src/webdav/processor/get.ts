@@ -6,8 +6,9 @@ import Lib from "../Lib";
 import FileModel from "../../model/FileModel";
 import FileLib from "../../lib/File";
 import {open} from 'fs/promises';
+import {ReadStream} from "fs";
 
-async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) {
+async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
     const url = new URL(req.url, `http://${req.headers.host}`);
     //
     const rootPos = url.pathname.indexOf(config.webDavRoot);

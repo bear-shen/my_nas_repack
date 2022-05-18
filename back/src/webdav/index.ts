@@ -4,12 +4,25 @@ import Authorize from "./Authorize";
 import Config from "../Config";
 import Method from "./Method";
 import method from "./Method";
-import {Buffer,constants as BuffConstants} from "buffer";
-console.log(BuffConstants.MAX_LENGTH);
+// import {Buffer, constants as BuffConstants} from "buffer";
+import {ReadStream, WriteStream} from "fs";
+import FileLib from "../lib/File";
+
+// console.log(BuffConstants.MAX_LENGTH);
 
 // const Promise = require('Promise');
 const http = require('http');
+const os = require('os');
+const fsP = require('fs/promises');
+const fs = require('fs');
+// console.info(os.tmpdir());
 
+let tmpPath = '';
+fsP.mkdtemp(`${os.tmpdir()}/nas_${process.pid}_`).then((path: string) => {
+    tmpPath = path;
+    console.info(`tmp path: ${tmpPath} generated`);
+    // process.exit();
+});
 /**
  * propfind
  * 返回401
@@ -46,7 +59,7 @@ const http = require('http');
  * */
 
 const server = http.createServer(async function (req: IncomingMessage, res: ServerResponse) {
-    const body = await getRequestBody(req);
+    const body = await getRequestBody(req, res);
     console.info(req.method, req.headers,);
     const authorized = await Authorize.check(req);
     // console.info(authorized);
@@ -73,22 +86,38 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
 server.listen(Config.webdav_port);
 
 //@see https://github.com/OpenMarshal/npm-WebDAV-Server/blob/master/src/server/v2/webDAVServer/StartStop.ts#L30
-function getRequestBody(req: IncomingMessage): Promise<Buffer> {
-    return new Promise((resolve: any) => {
-        console.info(req.headers['content-type']);
-        const len = req.headers["content-length"] ? Number.parseInt(req.headers["content-length"]) : 0;
-        let total = 0;
-        const bodyBuffer = Buffer.alloc(len);
-        req.on('data', chunk => {
+function getRequestBody(req: IncomingMessage, res: ServerResponse): Promise<ReadStream> {
+    return new Promise(async (resolve: any) => {
+        // console.info(req.headers['content-type']);
+        const length = req.headers["content-length"] ? Number.parseInt(req.headers["content-length"]) : 0;
+        let wrote = 0;
+        // const bodyBuffer = Buffer.alloc(length);
+        let reqTmpFilePath: string, rs: WriteStream;
+        if (length) {
+            reqTmpFilePath = `${tmpPath}/${(new Date()).valueOf()}`;
+            rs = fs.createWriteStream(reqTmpFilePath);
+        }
+        req.on('data', async chunk => {
             if (chunk.constructor === String)
                 chunk = Buffer.from(chunk);
-            bodyBuffer.fill(chunk, total,chunk.length);
-            total+=chunk.length;
+            await rs.write(chunk);
+            wrote += chunk.length;
         });
-        req.on('end', () => {
-            if (!bodyBuffer.length) return resolve(null);
-            resolve(bodyBuffer);
+        req.on('end', async () => {
+            await rs.close();
+            if (!length) return resolve(null);
+            // console.info(reqTmpFilePath, rs, wrote);
+            resolve(fs.createReadStream(reqTmpFilePath));
         });
+        res.on('close', async () => {
+            if (reqTmpFilePath) {
+                try {
+                    await fs.stat(reqTmpFilePath);
+                    await fs.rm(reqTmpFilePath);
+                } catch (e) {
+                }
+            }
+        })
     });
 }
 

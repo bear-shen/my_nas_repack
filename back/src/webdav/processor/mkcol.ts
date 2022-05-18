@@ -5,8 +5,9 @@ import config from "../../Config";
 import Lib from "../Lib";
 import NodeModel from "../../model/NodeModel";
 import QueueModel from "../../model/QueueModel";
+import {ReadStream} from "fs";
 
-async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) {
+async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
     const url = new URL(req.url, `http://${req.headers.host}`);
     //
     const rootPos = url.pathname.indexOf(config.webDavRoot);

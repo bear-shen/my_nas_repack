@@ -6,6 +6,7 @@ import config from "../../Config";
 import Lib from "../Lib";
 
 const convert = require('xml-js');
+import {ReadStream} from "fs";
 
 /**
  * header
@@ -15,8 +16,8 @@ const convert = require('xml-js');
 
 import {Buffer} from "buffer";
 
-async function process(req: IncomingMessage, body: Buffer, res: ServerResponse) {
-    console.info('proc here, req:', body);
+async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
+    // console.info('proc here, req:', body);
     const url = new URL(req.url, `http://${req.headers.host}`);
     let output = '';
     const outputData = getBase();
@@ -84,7 +85,7 @@ function resp(res: ServerResponse, outputData: ElementCompact) {
     const output = convert.js2xml(outputData, {compact: true,});
     if (output) res.setHeader('Content-Type', 'text/xml; charset="utf-8"');
     res.statusCode = 207;
-    console.info(output);
+    // console.info(output);
     res.write(output);
     res.end();
 }

@@ -1,3 +1,12 @@
+
+|---------|------------------------------------|
+| key     | ln                                 | 
+|---------|------------------------------------| 
+| webdav  | http://www.webdav.org/             |
+|---------|------------------------------------|
+
+
+
 # cmp
 
 - 任务/转码遇到bug的处理没做好
@@ -26,6 +35,16 @@
 
 # tbd
 
+- webdav的性能问题，分成两个部分
+  - `IncomingMessage`的效率
+  - hash的效率，md5太慢了
+    - https://github.com/Cyan4973/xxHash
+    - http://cyan4973.github.io/xxHash/
+    - [What is the difference between a Hash Function and a Cryptographic Hash Function?](https://security.stackexchange.com/questions/11839/what-is-the-difference-between-a-hash-function-and-a-cryptographic-hash-function)
+    - blake3 -> b3sum
+    - blake2
+    - sm3
+    - `openssl help`
 - 文件上传状态好像有bug
 - 还有文本编辑器最好也搞一个，或者集成vscode也行
 - 设置页做成了tab的形式

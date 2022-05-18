@@ -1,6 +1,4 @@
 import {IncomingMessage, ServerResponse} from "http";
-import {fromByteArray} from 'base64-js';
-import {Fields, Files, PersistentFile} from "formidable";
 import ErrorCode from "./ErrorCode";
 import Authorize from "./Authorize";
 import Config from "../Config";
@@ -11,10 +9,6 @@ import {Buffer} from "buffer";
 
 // const Promise = require('Promise');
 const http = require('http');
-const url = require('url');
-const fs = require('fs');
-const path = require('path');
-const formidable = require('formidable');
 
 /**
  * propfind
@@ -78,6 +72,7 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
 });
 server.listen(Config.webdav_port);
 
+//@see https://github.com/OpenMarshal/npm-WebDAV-Server/blob/master/src/server/v2/webDAVServer/StartStop.ts#L30
 function getRequestBody(req: IncomingMessage): Promise<Buffer> {
     return new Promise((resolve: any) => {
         const bodyBuffers: Buffer[] = [];
@@ -87,16 +82,13 @@ function getRequestBody(req: IncomingMessage): Promise<Buffer> {
         });
         req.on('end', () => {
             // console.info('a', a);
-            if (bodyBuffers.length) {
-                let len = 0;
-                for (let i1 = 0; i1 < bodyBuffers.length; i1++) {
-                    len += bodyBuffers[i1].length;
-                }
-                const bodyBuffer = Buffer.concat(bodyBuffers, len);
-                resolve(bodyBuffer);
-            } else {
-                resolve(null);
+            if (!bodyBuffers.length) return resolve(null);
+            let len = 0;
+            for (let i1 = 0; i1 < bodyBuffers.length; i1++) {
+                len += bodyBuffers[i1].length;
             }
+            const bodyBuffer = Buffer.concat(bodyBuffers, len);
+            resolve(bodyBuffer);
         });
     });
 }
@@ -110,6 +102,7 @@ function sendErr(code: keyof typeof ErrorCode, res: ServerResponse) {
     res.write(`${code} : ${msg}`);
     res.end();
 }
+
 
 
 

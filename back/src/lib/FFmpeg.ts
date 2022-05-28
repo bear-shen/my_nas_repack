@@ -1,4 +1,5 @@
 import Config from "../Config";
+import * as fs from "fs/promises";
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -8,12 +9,13 @@ const convertConfig = Config.fileParseConfig;
 async function loadMeta(path: string) {
     let meta;
     try {
+        // await fs.stat(path);
         const vidProbe = `ffprobe -v quiet -hide_banner -print_format json -show_format -show_streams -i '${path}'`;// > '${root}/dev/${path}.json'
         const {stdout, stderr} = await exec(vidProbe);
         // console.info(stdout, stderr);
         meta = JSON.parse(stdout);
     } catch (e: any) {
-        console.info((e as Error).name, (e as Error).message, (e as Error).stack,);
+        console.info((e as Error).name, (e as Error).message,);
     }
     return meta;
 }
@@ -97,7 +99,7 @@ async function videoStr(meta: any)
                     }k -maxrate:v ${
                         rate * 4
                     }k -minrate:v ${
-                        Math.round(rate /4)
+                        Math.round(rate / 4)
                     }k -bufsize:v ${
                         rate * 5
                     }k -rc-lookahead ${vConf.h264_nvenc.lookahead}k ${tranSize}`;

@@ -42,6 +42,7 @@ async function buildNode(payload: any) {
         case 'image':
             console.info('#', rawPath);
             fileMeta = await ffmpeg.loadMeta(rawPath);
+            if (!fileMeta) throw new Error('load meta data failed');
             parseStr.cover = [await ffmpeg.imageStr('cover', fileMeta), config.fileParseConfig.i_cover.format,];
             parseStr.preview = [await ffmpeg.imageStr('preview', fileMeta), config.fileParseConfig.i_preview.format,];
             parseStr.normal = [await ffmpeg.imageStr('normal', fileMeta), config.fileParseConfig.i_normal.format,];
@@ -50,6 +51,7 @@ async function buildNode(payload: any) {
         case 'video':
             console.info('#', rawPath);
             fileMeta = await ffmpeg.loadMeta(rawPath);
+            if (!fileMeta) throw new Error('load meta data failed');
             parseStr.cover = [await ffmpeg.imageStr('cover', fileMeta), config.fileParseConfig.i_cover.format,];
             parseStr.preview = [await ffmpeg.imageStr('preview', fileMeta), config.fileParseConfig.i_preview.format,];
             parseStr.normal = [await ffmpeg.videoStr(fileMeta), config.fileParseConfig.v_normal.format,];
@@ -58,6 +60,7 @@ async function buildNode(payload: any) {
         case 'audio':
             console.info('#', rawPath);
             fileMeta = await ffmpeg.loadMeta(rawPath);
+            if (!fileMeta) throw new Error('load meta data failed');
             parseStr.cover = [await ffmpeg.imageStr('cover', fileMeta), config.fileParseConfig.i_cover.format,];
             parseStr.preview = [await ffmpeg.imageStr('preview', fileMeta), config.fileParseConfig.i_preview.format,];
             parseStr.normal = [await ffmpeg.audioStr(fileMeta), config.fileParseConfig.a_normal.format,];
@@ -66,6 +69,7 @@ async function buildNode(payload: any) {
         case 'subtitle':
             console.info('#', rawPath);
             fileMeta = await ffmpeg.loadMeta(rawPath);
+            if (!fileMeta) throw new Error('load meta data failed');
             parseStr.normal = [await ffmpeg.subtitleStr(fileMeta), config.fileParseConfig.stt_normal.format,];
             shouldParse = true;
             break;

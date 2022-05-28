@@ -82,6 +82,8 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
         return sendErr(500, res);
     }
     if (!res.writableEnded) res.end();
+    if (body && !body.destroyed) body.destroy();
+    // console.info('req proc end');
 });
 server.listen(Config.webdav_port);
 
@@ -104,12 +106,14 @@ function getRequestBody(req: IncomingMessage, res: ServerResponse): Promise<Read
             wrote += chunk.length;
         });
         req.on('end', async () => {
-            await rs.close();
+            if (rs) rs.destroy();
             if (!length) return resolve(null);
             // console.info(reqTmpFilePath, rs, wrote);
+            console.info(reqTmpFilePath);
             resolve(fs.createReadStream(reqTmpFilePath));
         });
         res.on('close', async () => {
+            // console.info('req evt close');
             if (reqTmpFilePath) {
                 try {
                     await fs.stat(reqTmpFilePath);

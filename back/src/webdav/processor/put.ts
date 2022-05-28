@@ -71,10 +71,14 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
         ifFile = await (new FileModel).where('id', ifNode.index_file_id.raw).first();
     }
     //写入文件
+    Lib.respCode(res, 204);
+    // console.info('put resp send');
     if (!req.headers["content-length"])
-        return Lib.respCode(res, 204);
+        // return Lib.respCode(res, 204);
+        return;
     if (!body)
-        return Lib.respCode(res, 204);
+        // return Lib.respCode(res, 204);
+        return;
     //
     // const tmpFilePath = `${Config.fileRoot}temp/webdav/${(new Date).valueOf()}`;
     // await FileLib.makeFileDir(tmpFilePath, false);
@@ -109,9 +113,9 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
         const insFileResult = await (new FileModel).insert(ifFile);
         ifFile.id = insFileResult.insertId;
     }
-    body.close();
     if (ifNode.index_file_id.raw === ifFile.id)
-        return Lib.respCode(res, 204);
+        // return Lib.respCode(res, 204);
+        return;
     //更新文件节点
     let hasBuild = false;
     if (ifFile.time_create) {
@@ -148,7 +152,9 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
             payload: {id: ifNode.id},
         });
     }
-    return Lib.respCode(res, 204);
+    // return Lib.respCode(res, 204);
+    // console.info('put full end');
+    return;
 }
 
 export default {process};

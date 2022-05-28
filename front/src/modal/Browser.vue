@@ -199,8 +199,8 @@ import PdfBrowser from './browser/Pdf.vue';
 import BrowserBase from '@/modal/browser/Base.vue';
 
 @Options({
-  emits        : ['close'],
-  props        : {
+  emits: ['close'],
+  props: {
     modalMeta: Object as unknown as ModalMeta
     // input: Object as unknown as {
     //   item: Node,
@@ -210,25 +210,25 @@ import BrowserBase from '@/modal/browser/Base.vue';
     //模态框的DOM`
     // frame: Object as unknown as HTMLElement,
   },
-  components   : {
+  components: {
     ImageBrowser,
     VideoBrowser,
     AudioBrowser,
     PdfBrowser,
     BrowserBase,
   },
-  data         : function () {
+  data: function () {
     return {
-      list       : [] as Array<Node>,
-      cur        : 0,
-      item       : false as unknown as Node,
+      list: [] as Array<Node>,
+      cur: 0,
+      item: false as unknown as Node,
       show_detail: false,
-      has_next   : false,
-      has_prev   : false,
-      hide_type  : ['directory', 'subtitle'],
+      has_next: false,
+      has_prev: false,
+      hide_type: ['directory', 'subtitle'],
     };
   },
-  created      : function () {
+  created: function () {
     console.debug('Browser:created:', this, (this.modalMeta as ModalMeta).data);
     // console.debug(this.$store);
     // if (!this.modalMeta.modal.layout.resized) {
@@ -237,8 +237,8 @@ import BrowserBase from '@/modal/browser/Base.vue';
     // }
     this.$store.commit('browser/load');
   },
-  watch        : {},
-  mounted      : function () {
+  watch: {},
+  mounted: function () {
     console.debug('Browser:mounted:', this, (this.modalMeta as ModalMeta).data);
     //
     /*setTimeout(() => {
@@ -264,8 +264,8 @@ import BrowserBase from '@/modal/browser/Base.vue';
      key: `hotkey_browser_frame_${curIndex}`,
      });*/
   },
-  methods      : {
-    fetch    : async function () {
+  methods: {
+    fetch: async function () {
       const query = JSON.parse(JSON.stringify((this.modalMeta as ModalMeta).data.query));
       console.debug('FileBrowser:Base:fetch', query);
       query.total = 1;
@@ -288,7 +288,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
         }
       }
     },
-    init     : function () {
+    init: function () {
       const modal = (this.modalMeta as ModalMeta).modal;
       // modal.layout.resized = true;
       const targetW = 480;
@@ -300,14 +300,14 @@ import BrowserBase from '@/modal/browser/Base.vue';
         {
           defW: targetW,
           defH: targetH,
-          w   : targetW,
-          h   : targetH,
-          x   : (iw - targetW) / 2,
-          y   : (ih - targetH) / 2,
+          w: targetW,
+          h: targetH,
+          x: (iw - targetW) / 2,
+          y: (ih - targetH) / 2,
         }
       );
     },
-    next     : async function () {
+    next: async function () {
       //遇到一个问题，现在视频和普通文件是写一起的，
       //但是视频又要支持各种随机播放循环播放之类的东西
       //所以在考虑设定成queue模式下不支持循环，且切换到普通文件之后重置为queue
@@ -316,6 +316,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
       //另外还有一个字幕的问题，这个再想
       console.debug('FileBrowser:next');
       const index = this.nextIndex();
+      // console.info(index);
       if (index === -1) return;
       this.cur = index;
       this.item = this.list[this.cur];
@@ -323,7 +324,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
       this.has_prev = true;
       this.nextIndex();
     },
-    prev     : async function () {
+    prev: async function () {
       console.debug('FileBrowser:prev');
       const index = this.prevIndex();
       if (index === -1) return;
@@ -333,7 +334,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
       this.has_next = true;
       this.prevIndex();
     },
-    refresh  : function () {
+    refresh: function () {
       this.nextIndex();
       this.prevIndex();
     },
@@ -359,6 +360,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
         truncatedNextIndex = i;
         break;
       }
+      // console.info(mode, fileCount, nextIndex, truncatedNextIndex);
       //
       let shuffleIndex = -1;
       switch (mode) {
@@ -461,7 +463,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
      console.debug('chkPrev', index, this.has_prev);
      return index;
      },*/
-    actDetail  : async function (e: MouseEvent) {
+    actDetail: async function (e: MouseEvent) {
       //穿透给base用的
 
       // console.info(e.type);
@@ -470,7 +472,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
         case 'click':
           this.$store.commit('browser/set',
             {
-              key  : 'lock_detail',
+              key: 'lock_detail',
               value: !this.$store.state.browser.config.lock_detail
             }
           );
@@ -500,10 +502,10 @@ import BrowserBase from '@/modal/browser/Base.vue';
       console.debug('FileBrowser:download');
       window.open(this.item.file.path_raw, '_blank');
     },
-    actShare   : async function () {
+    actShare: async function () {
       console.debug('FileBrowser:share');
     },
-    close      : async function () {
+    close: async function () {
       this.$emit('close');
     },
   },

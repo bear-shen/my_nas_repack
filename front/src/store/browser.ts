@@ -7,6 +7,12 @@ export default {
   namespaced: true,
   state: {
     //保存一些浏览器用的设置
+    defConfig: {
+      media_play_mode: 'loop',
+      lock_detail: false,
+      media_volume: 100,
+      media_mute: false,
+    },
     config: {} as { [key: string]: any },
     loaded: false,
   },
@@ -22,9 +28,12 @@ export default {
       localStorage.setItem(key, JSON.stringify(state.config));
     },
     load: function (state: any) {
-      let confStr = localStorage.getItem(key);
-      if (!confStr) confStr = '{}';
-      state.config = JSON.parse(confStr);
+      const confStr = localStorage.getItem(key);
+      if (confStr) {
+        state.config = JSON.parse(confStr);
+      } else {
+        state.config = JSON.parse(JSON.stringify(state.defConfig));
+      }
       state.loaded = true;
     },
     /*save: function (state: any) {

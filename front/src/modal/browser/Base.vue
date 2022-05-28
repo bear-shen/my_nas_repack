@@ -222,7 +222,7 @@ import fileListDemo from '@/demo/getFileList';
       // this.saveConf();
     },
     hotkeyMap: async function (e: KeyboardEvent) {
-      // console.info(e.type, e.key, e.target, e);
+      // console.info(e.type, e.key, e.target, e, this);
       // console.info(e.type, e.key, this.$store.state.focus.last, (this.modalMeta as ModalMeta).modal.nid);
       if (['ArrowLeft', 'ArrowRight',].indexOf(e.key) === -1) return;
       const curIndex = (this.modalMeta as ModalMeta).modal.nid;
@@ -243,7 +243,7 @@ import fileListDemo from '@/demo/getFileList';
         }
         domWalker = domWalker.parentNode;
       }
-      // console.info(modalExists);
+      // console.info(isCur);
       if (!isCur) return;
       const isDefault = !!(domWalker.getElementsByClassName('browser_default_content').length);
       if (!isDefault) return;

@@ -435,10 +435,11 @@ import BrowserBase from './Base.vue';
       }));*/
     },
     hotkeyMap: async function (e: KeyboardEvent) {
-      // console.info(e.type, e.key, e.target, e);
+      // console.info(e.type, e.key, e.target, e, this);
       // console.info(e.type, e.key, this.$store.state.focus.last, (this.modalMeta as ModalMeta).modal.nid);
       if (['ArrowLeft', 'ArrowRight', '+', '-',].indexOf(e.key) === -1) return;
       const curIndex = (this.modalMeta as ModalMeta).modal.nid;
+      // console.info('here')
       //输入不在body时禁用（input之类的）
       if (e.target && (e.target as HTMLElement).tagName !== 'BODY') return;
       //上次点击的内容在模态里，
@@ -456,13 +457,13 @@ import BrowserBase from './Base.vue';
         }
         domWalker = domWalker.parentNode;
       }
-      // console.info(modalExists);
+      // console.info(curId, isCur);
       if (!isCur) return;
       //第一次触发以后，把dom改到modal一层
       // 不然切换浏览器类型的时候会无法遍历
       this.$store.state.focus.last = domWalker;
       // console.info('set pager');
-      // console.info(e.key);
+      // console.info(e.key,this.browserMeta.navi);
       switch (e.key) {
         case 'ArrowLeft':
           this.browserMeta.navi.prev();

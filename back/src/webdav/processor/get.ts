@@ -1,12 +1,13 @@
 import {IncomingMessage, ServerResponse} from "http";
 
-import {Buffer} from "buffer";
+import {Buffer, constants as BuffConstants} from "buffer";
 import config from "../../Config";
 import Lib from "../Lib";
 import FileModel from "../../model/FileModel";
 import FileLib from "../../lib/File";
 import {open} from 'fs/promises';
-import {ReadStream} from "fs";
+import {read, ReadStream} from "fs";
+import * as fs from "fs";
 
 async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -40,14 +41,25 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
             }
         }
     }
-    let fileHandle = await open(filePath, 'r');
-    let buffer = Buffer.alloc(bufTo - bufFrom);
-    await fileHandle.read(buffer, 0, bufTo - bufFrom, bufFrom);
-    fileHandle.close();
-    console.info('print:', buffer, buffer.length, bufFrom, bufTo);
-    res.write(buffer);
+    // let fileHandle = await open(filePath, 'r');
+    console.info(curFile, bufTo, bufFrom);
+    await writeFileStream(res, filePath, bufFrom, bufTo);
     res.statusCode = 206;
     res.end();
+}
+
+function writeFileStream(res: ServerResponse, path: string, from: number, to: number): Promise<any> {
+    return new Promise((resolve: any) => {
+        const rs = fs.createReadStream(path, {
+            start: from, end: to
+        });
+        rs.on('data', (chunk) => {
+            res.write(chunk);
+        })
+        rs.on('end', () => {
+            resolve();
+        });
+    })
 }
 
 export default {process};

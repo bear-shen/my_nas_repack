@@ -12,7 +12,7 @@ import {Stats} from "node:fs";
 const md5 = require('md5');
 const crypt = require('crypto');
 
-function getFileMD5(rs: fsNP.ReadStream): Promise<string> {
+function getFileHash(rs: fsNP.ReadStream): Promise<string> {
     return new Promise((resolve) => {
         const hash = crypt.createHash('md5');
         rs.on('data', (buffer: Buffer) => {
@@ -381,7 +381,7 @@ async function getFileStat(path: string): Promise<Stats | null> {
 }
 
 export default {
-    getFileMD5,
+    getFileHash,
     makeFileDir,
     makeHashPath,
     makePath,

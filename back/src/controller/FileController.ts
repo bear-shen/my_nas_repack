@@ -14,8 +14,6 @@ import QueueModel from "../model/QueueModel";
 import UserModel from "../model/UserModel";
 import UserGroupModel from "../model/UserGroupModel";
 
-const md5 = require('md5');
-const crypt = require('crypto')
 
 class FileController extends BaseController {
     async upload(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {
@@ -29,7 +27,7 @@ class FileController extends BaseController {
             const file = data.files[filesKey] as unknown as File;
             // const fileHandler = await fs.open(file.filepath, 'r');
             const rs = fsNP.createReadStream(file.filepath);
-            const fileHash = await FileLib.getFileMD5(rs);
+            const fileHash = await FileLib.getFileHash(rs);
             rs.close();
             // const hashPath = FileLib.makeHashPath(fileHash);
             /*console.info(0);

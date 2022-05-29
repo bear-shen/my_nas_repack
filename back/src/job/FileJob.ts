@@ -109,10 +109,10 @@ async function buildNode(payload: any) {
         }
         if (!targetFRS) continue;
         //
-        const targetMD5 = await FileLib.getFileMD5(targetFRS);
+        const targetHash = await FileLib.getFileHash(targetFRS);
         targetFRS.close();
         //
-        const ifDupFile = await (new FileModel).where('hash', targetMD5).first();
+        const ifDupFile = await (new FileModel).where('hash', targetHash).first();
         if (ifDupFile) {
             targetFileIndex[showType] = ifDupFile.id;
             await fs.unlink(tmpPath);
@@ -124,7 +124,7 @@ async function buildNode(payload: any) {
         if (showType === 'normal') fileType = rawFile.type;
         const targetRelPath = FileLib.makePath('rel', fileType, rawFile.hash, parseStr[showType][1]);
         const insFileResult = await (new FileModel).insert({
-            hash: targetMD5,
+            hash: targetHash,
             type: fileType,
             suffix: parseStr[showType][1],
             path: targetRelPath,
@@ -134,7 +134,7 @@ async function buildNode(payload: any) {
         });
         targetFileIndex[showType] = insFileResult.insertId;
         //
-        const targetPath = FileLib.makePath('local', fileType, targetMD5, parseStr[showType][1]);
+        const targetPath = FileLib.makePath('local', fileType, targetHash, parseStr[showType][1]);
         console.info('rn', tmpPath, targetPath);
         await FileLib.makeFileDir(targetPath, false);
         await fs.rename(tmpPath, targetPath);
@@ -204,7 +204,7 @@ async function dirImport(dirPath: string, dirId: number) {
             console.info(nodeInfo.index_node, nodeInfo.title);
         } else if (stat.isFile()) {
             const rs = fsNP.createReadStream(fPath);
-            const fileHash = await FileLib.getFileMD5(rs);
+            const fileHash = await FileLib.getFileHash(rs);
             rs.close();
             // const hashPath = FileLib.makeHashPath(fileHash);
             //

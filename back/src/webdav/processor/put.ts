@@ -86,7 +86,7 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
     // console.info(`write to :${tmpFilePath}`);
     // const rs = fsNP.createReadStream(tmpFilePath);
     //@see setFile
-    const fileHash = await FileLib.getFileMD5(body);
+    const fileHash = await FileLib.getFileHash(body);
     const tmpFilePath = body.path as string;
 
     const rawRelPath = FileLib.makePath('rel', fileType, fileHash, suffix);

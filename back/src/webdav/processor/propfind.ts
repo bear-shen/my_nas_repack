@@ -16,7 +16,7 @@ import {ReadStream} from "fs";
 
 import {Buffer} from "buffer";
 
-async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
+async function process(req: IncomingMessage, bodyPath: string, res: ServerResponse) {
     // console.info('proc here, req:', body);
     const url = new URL(req.url, `http://${req.headers.host}`);
     let output = '';

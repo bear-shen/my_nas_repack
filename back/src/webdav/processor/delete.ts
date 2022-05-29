@@ -6,7 +6,7 @@ import Lib from "../Lib";
 import NodeModel from "../../model/NodeModel";
 import {ReadStream} from "fs";
 
-async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
+async function process(req: IncomingMessage, bodyPath: string, res: ServerResponse) {
     // console.info('proc here, req:', body);
     const url = new URL(req.url, `http://${req.headers.host}`);
     //@see FileController/delete

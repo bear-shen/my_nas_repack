@@ -9,7 +9,7 @@ import {open} from 'fs/promises';
 import {read, ReadStream} from "fs";
 import * as fs from "fs";
 
-async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
+async function process(req: IncomingMessage, bodyPath: string, res: ServerResponse) {
     const url = new URL(req.url, `http://${req.headers.host}`);
     //
     const rootPos = url.pathname.indexOf(config.webDavRoot);

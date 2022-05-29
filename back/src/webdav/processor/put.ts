@@ -11,7 +11,7 @@ import QueueModel from "../../model/QueueModel";
 import {Buffer} from "buffer";
 import {ReadStream} from "fs";
 
-async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
+async function process(req: IncomingMessage,bodyPath: string, res: ServerResponse) {
     const dirOffset = req.url.replace(/\/$/ig, '').lastIndexOf('/');
     const dirPath = req.url.substring(0, dirOffset);
     const fileName = decodeURIComponent(req.url.substring(dirOffset + 1));
@@ -57,7 +57,7 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
         ifNode = nodeData;
         if (!req.headers["content-length"])
             return Lib.respCode(res, 201);
-        if (!body)
+        if (!bodyPath)
             return Lib.respCode(res, 201);
     }
 
@@ -76,7 +76,7 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
     if (!req.headers["content-length"])
         // return Lib.respCode(res, 204);
         return;
-    if (!body)
+    if (!bodyPath)
         // return Lib.respCode(res, 204);
         return;
     //
@@ -86,8 +86,8 @@ async function process(req: IncomingMessage, body: ReadStream, res: ServerRespon
     // console.info(`write to :${tmpFilePath}`);
     // const rs = fsNP.createReadStream(tmpFilePath);
     //@see setFile
-    const fileHash = await FileLib.getFileHash(body);
-    const tmpFilePath = body.path as string;
+    const fileHash = await FileLib.getFileHash(bodyPath);
+    const tmpFilePath = bodyPath as string;
 
     const rawRelPath = FileLib.makePath('rel', fileType, fileHash, suffix);
     const rawPath = FileLib.makePath('local', fileType, fileHash, suffix);

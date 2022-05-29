@@ -59,7 +59,7 @@ fsP.mkdtemp(`${os.tmpdir()}/nas_${process.pid}_`).then((path: string) => {
  * */
 
 const server = http.createServer(async function (req: IncomingMessage, res: ServerResponse) {
-    const body = await getRequestBody(req, res);
+    const tmpBodyPath = await getRequestBody(req, res);
     console.info(req.method, req.headers,);
     const authorized = await Authorize.check(req);
     // console.info(authorized);
@@ -72,7 +72,7 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
         return sendErr(501, res);
     }
     try {
-        await Method[req.method as keyof typeof method](req, body, res);
+        await Method[req.method as keyof typeof method](req, tmpBodyPath, res);
     } catch (e: any) {
         console.error(
             (e as Error).name,
@@ -82,13 +82,14 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
         return sendErr(500, res);
     }
     if (!res.writableEnded) res.end();
-    if (body && !body.destroyed) body.destroy();
+    // if (body && !body.destroyed) body.destroy();
     // console.info('req proc end');
 });
 server.listen(Config.webdav_port);
 
 //@see https://github.com/OpenMarshal/npm-WebDAV-Server/blob/master/src/server/v2/webDAVServer/StartStop.ts#L30
-function getRequestBody(req: IncomingMessage, res: ServerResponse): Promise<ReadStream> {
+// function getRequestBody(req: IncomingMessage, res: ServerResponse): Promise<ReadStream> {
+function getRequestBody(req: IncomingMessage, res: ServerResponse): Promise<string> {
     return new Promise(async (resolve: any) => {
         // console.info(req.headers['content-type']);
         const length = req.headers["content-length"] ? Number.parseInt(req.headers["content-length"]) : 0;
@@ -110,7 +111,8 @@ function getRequestBody(req: IncomingMessage, res: ServerResponse): Promise<Read
             if (!length) return resolve(null);
             // console.info(reqTmpFilePath, rs, wrote);
             console.info(reqTmpFilePath);
-            resolve(fs.createReadStream(reqTmpFilePath));
+            resolve(reqTmpFilePath);
+            // resolve(fs.createReadStream(reqTmpFilePath));
         });
         res.on('close', async () => {
             // console.info('req evt close');

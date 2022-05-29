@@ -4,7 +4,7 @@ import {Buffer} from "buffer";
 import Lib from "../Lib";
 import {ReadStream} from "fs";
 
-async function process(req: IncomingMessage, body: ReadStream, res: ServerResponse) {
+async function process(req: IncomingMessage, bodyPath: string, res: ServerResponse) {
     res.setHeader(
         'Allow',
         [

@@ -102,15 +102,14 @@ async function buildNode(payload: any) {
         let targetFRS = null;
         try {
             const {stdout, stderr} = await exec(str);
-            targetFRS = fsNP.createReadStream(tmpPath);
         } catch (e: any) {
             console.info((e as Error).name, (e as Error).message, (e as Error).stack,);
             throw new Error('error occurred on exec');
         }
-        if (!targetFRS) continue;
+        const ifExs = await FileLib.getFileStat(tmpPath);
+        if (!ifExs) throw new Error('tmp file generate failed');
         //
-        const targetHash = await FileLib.getFileHash(targetFRS);
-        targetFRS.close();
+        const targetHash = await FileLib.getFileHash(tmpPath);
         //
         const ifDupFile = await (new FileModel).where('hash', targetHash).first();
         if (ifDupFile) {
@@ -203,9 +202,7 @@ async function dirImport(dirPath: string, dirId: number) {
             await dirImport(fPath, nodeInfo.id);
             console.info(nodeInfo.index_node, nodeInfo.title);
         } else if (stat.isFile()) {
-            const rs = fsNP.createReadStream(fPath);
-            const fileHash = await FileLib.getFileHash(rs);
-            rs.close();
+            const fileHash = await FileLib.getFileHash(fPath);
             // const hashPath = FileLib.makeHashPath(fileHash);
             //
             let suffix = FileLib.getSuffixByName(name);

@@ -12,8 +12,16 @@ import {Stats} from "node:fs";
 const md5 = require('md5');
 const crypt = require('crypto');
 
-function getFileHash(rs: fsNP.ReadStream): Promise<string> {
+function getFileHash(input: fsNP.ReadStream | string): Promise<string> {
     return new Promise((resolve) => {
+        //
+        let rs: fsNP.ReadStream;
+        if (typeof input === 'string') {
+            rs = fsNP.createReadStream(input);
+        } else {
+            rs = input;
+        }
+        //
         const hash = crypt.createHash('md5');
         rs.on('data', (buffer: Buffer) => {
             hash.update(buffer, 'binary');

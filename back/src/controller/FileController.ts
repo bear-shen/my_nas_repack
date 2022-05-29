@@ -26,9 +26,9 @@ class FileController extends BaseController {
         for (const filesKey in data.files) {
             const file = data.files[filesKey] as unknown as File;
             // const fileHandler = await fs.open(file.filepath, 'r');
-            const rs = fsNP.createReadStream(file.filepath);
-            const fileHash = await FileLib.getFileHash(rs);
-            rs.close();
+            // const rs = fsNP.createReadStream(file.filepath);
+            const fileHash = await FileLib.getFileHash(file.filepath);
+            // rs.close();
             // const hashPath = FileLib.makeHashPath(fileHash);
             /*console.info(0);
             const fileBuffer = await fs.readFile(file.filepath);

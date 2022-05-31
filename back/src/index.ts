@@ -46,7 +46,7 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
     //
     let result = null;
     try {
-        result = await Router(urlInfo, data);
+        result = await Router(urlInfo, data, req, res);
         result = {
             'code': 0,
             'msg': 'success',
@@ -60,8 +60,10 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
             'data': (e as Error).stack,
         };
     }
-    res.write(JSON.stringify(result));
-    res.end();
+    if (res.writable) {
+        res.write(JSON.stringify(result));
+        res.end();
+    }
 });
 server.listen(Config.port);
 console.log("Server runing at port: " + Config.port + ".");

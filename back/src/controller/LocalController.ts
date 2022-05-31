@@ -1,6 +1,9 @@
 import BaseController from "./BaseController";
 import {Fields, File, PersistentFile} from "formidable";
 import * as fs from "fs/promises";
+import * as fsNP from "fs";
+import FileLib from "../lib/File";
+import {IncomingMessage, ServerResponse} from "http";
 
 class LocalController extends BaseController {
     async ls(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {
@@ -33,6 +36,85 @@ class LocalController extends BaseController {
         }
         return target;
     }
+
+    async get(
+        data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number },
+        req: IncomingMessage, res: ServerResponse
+    ): Promise<any> {
+        const fields = Object.assign({
+            path: '/',
+        }, data.fields);
+        //
+        let ifExs = await FileLib.getFileStat(fields.path);
+        if (!ifExs) throw new Error('file not found');
+        if (!ifExs.isFile()) throw new Error('target is not a file');
+        const dirIndex = fields.path.lastIndexOf('/');
+        const fileName = fields.path.slice(dirIndex);
+        // fsNP.createReadStream(fields.path);
+        res.statusCode = 200;
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
+        writeFileStream(res, fields.path);
+        res.end();
+        return;
+    }
+
+    async put(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {
+        let file: File;
+        const fields = Object.assign({
+            path: '/',
+        }, data.fields);
+        //
+        for (const filesKey in data.files) {
+            file = data.files[filesKey] as unknown as File;
+        }
+        //
+        let ifExs = await FileLib.getFileStat(fields.path);
+        if (ifExs) {
+            if (!ifExs.isFile()) throw new Error('target is not a file');
+            await fs.rm(fields.path);
+        }
+        await fs.rename(file.filepath, fields.path);
+    }
+
+    async mkdir(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {
+        const fields = Object.assign({
+            path: '/',
+        }, data.fields);
+        //
+        let ifExs = await FileLib.getFileStat(fields.path);
+        if (ifExs) {
+            if (ifExs.isFile()) throw new Error('target is a file');
+            return;
+        }
+        await fs.mkdir(fields.path, {recursive: true,});
+    }
+
+    async rm(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {
+        const fields = Object.assign({
+            path: '/',
+        }, data.fields);
+        //
+        let ifExs = await FileLib.getFileStat(fields.path);
+        if (!ifExs) return;
+        // console.info('del', depth, fromPath);
+        if (ifExs.isFile()) {
+            await fs.rm(fields.path);
+        } else if (ifExs.isDirectory()) {
+            await fs.rmdir(fields.path);
+        }
+    }
+}
+
+function writeFileStream(res: ServerResponse, path: string): Promise<any> {
+    return new Promise((resolve: any) => {
+        const rs = fsNP.createReadStream(path);
+        rs.on('data', (chunk) => {
+            res.write(chunk);
+        })
+        rs.on('end', () => {
+            resolve();
+        });
+    })
 }
 
 

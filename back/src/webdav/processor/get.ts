@@ -43,8 +43,8 @@ async function process(req: IncomingMessage, bodyPath: string, res: ServerRespon
     }
     // let fileHandle = await open(filePath, 'r');
     console.info(curFile, bufTo, bufFrom);
-    await writeFileStream(res, filePath, bufFrom, bufTo);
     res.statusCode = 206;
+    await writeFileStream(res, filePath, bufFrom, bufTo);
     res.end();
 }
 

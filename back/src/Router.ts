@@ -1,4 +1,4 @@
-import {IncomingMessage} from "http";
+import {IncomingMessage, ServerResponse} from "http";
 import {Fields, PersistentFile} from "formidable";
 import ORM from "./lib/ORM";
 import {conn} from "./lib/SQL";
@@ -24,7 +24,8 @@ const controllers = {
 
 export default async function (
     url: URL,
-    data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }
+    data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number },
+    req: IncomingMessage, res: ServerResponse
 ): Promise<any> {
     console.info(url.pathname,);
     // console.info(url, data,);
@@ -40,5 +41,5 @@ export default async function (
     if (!controller[a]) throw new Error('action not found');
     // console.info(_, c, a, FileController, controller, controller[a]);
     // @ts-ignore
-    return await controller[a](data);
+    return await controller[a](data, req, res);
 }

@@ -114,7 +114,7 @@ async function buildNode(payload: any) {
         const ifDupFile = await (new FileModel).where('hash', targetHash).first();
         if (ifDupFile) {
             targetFileIndex[showType] = ifDupFile.id;
-            await fs.unlink(tmpPath);
+            await fs.rm(tmpPath);
             continue;
         }
         const fStat = await fs.stat(tmpPath);

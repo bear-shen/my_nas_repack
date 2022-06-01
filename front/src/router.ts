@@ -6,6 +6,7 @@ import Setting from './views/Setting.vue'
 import Tag from './views/Tag.vue'
 // import User from '../views/User.vue'
 import Group from './views/Group.vue';
+import Local from '@/views/Local.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -59,6 +60,12 @@ const routes: Array<RouteRecordRaw> = [
         meta: {icon: 'sysIcon_user',},
       },
     ],*/
+  },
+  {
+    path: '/local',
+    name: 'Local',
+    component: Local,
+    meta: {icon: 'sysIcon_folder',},
   },
   {
     path: '/setting',

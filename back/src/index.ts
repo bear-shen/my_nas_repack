@@ -29,7 +29,7 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
     }
     //
     const urlInfo = new URL(req.url, `http://${req.headers.host}`);
-    const authResult = await Auth(urlInfo, req.headers);
+    const authResult = await Auth(urlInfo, req);
     if (!authResult) {
         res.write(JSON.stringify({
             'code': 10,
@@ -60,7 +60,7 @@ const server = http.createServer(async function (req: IncomingMessage, res: Serv
             'data': (e as Error).stack,
         };
     }
-    if (res.writable) {
+    if (!res.writableEnded) {
         res.write(JSON.stringify(result));
         res.end();
     }

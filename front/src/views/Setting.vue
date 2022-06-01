@@ -73,7 +73,7 @@ import HelloWorld from '@/components/HelloWorld.vue'
 import ContentEditable from '@/components/ContentEditable.vue';
 import {Node} from '@/struct';
 import {ModalCreatorConfig} from '@/lib/ModalLib';
-import ImportFiles from '@/views/SettingTab/ImportFiles.vue';
+// import ImportFiles from '@/views/SettingTab/ImportFiles.vue';
 import Demo from '@/views/SettingTab/Demo.vue';
 
 @Options({
@@ -82,12 +82,12 @@ import Demo from '@/views/SettingTab/Demo.vue';
   },
   data: function () {
     const list = [
-      {
+      /*{
         key: 'import_files',
         title: 'import files',
         description: 'import files from local dir',
         model: ImportFiles,
-      },
+      },*/
       {
         key: 'demo',
         title: 'a demo',

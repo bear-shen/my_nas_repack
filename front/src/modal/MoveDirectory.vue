@@ -66,12 +66,18 @@ import {Options, Vue} from 'vue-class-component'
 import fileListDemo from '@/demo/getFileList';
 import {Modal as ModalConstructor} from '@/lib/ModalLib';
 import Modal from '@/framework/Modal.vue';
-import {ModalMeta} from '@/struct';
+import {ModalMeta, Node} from '@/struct';
 
 @Options({
   emits: ['close'],
   props: {
-    modalMeta: Object as unknown as ModalMeta,
+    modalMeta: Object as unknown as (
+      ModalMeta & {
+      data?: {
+        callback?: (item: Node) => any,
+        data?: Node,
+      }
+    }),
     // input: Object,
     //模态框的基本设置
     // modal: Object as unknown as ModalConstructor,

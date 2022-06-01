@@ -46,14 +46,15 @@ class LocalController extends BaseController {
         }, data.fields);
         //
         let ifExs = await FileLib.getFileStat(fields.path);
+        // console.info(fields.path, ifExs);
         if (!ifExs) throw new Error('file not found');
         if (!ifExs.isFile()) throw new Error('target is not a file');
         const dirIndex = fields.path.lastIndexOf('/');
-        const fileName = fields.path.slice(dirIndex);
+        const fileName = fields.path.substring(dirIndex + 1);
         // fsNP.createReadStream(fields.path);
         res.statusCode = 200;
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
-        writeFileStream(res, fields.path);
+        await writeFileStream(res, fields.path);
         res.end();
         return;
     }

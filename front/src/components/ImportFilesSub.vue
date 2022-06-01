@@ -2,7 +2,7 @@
   <div class="dir">
     <div class="info" @click="fetch">
       <div>
-        <a @click.stop="setImport(path)">select</a>
+        <!--        <a @click.stop="setImport(path)">select</a>-->
         <p :style="{paddingLeft:`${level*20}px`}">
           <span :class="{
             sysIcon:true,
@@ -14,6 +14,10 @@
         </p>
       </div>
       <div class="meta">
+        <a @click.stop="setDelete(path)">Delete</a>
+        <a v-if="type==='directory'" @click.stop="setUpload(path)">Upload</a>
+        <a v-if="type==='file'" @click.stop="setDownload(path)">Download</a>
+        <a v-if="type==='directory'" @click.stop="setImport(path)">Import</a>
         <p>{{ $util.kmgt(size) }}</p>
         <p>{{ type }}</p>
         <p>{{ auth }}</p>
@@ -28,9 +32,9 @@
                         :type="item.type"
                         :auth="item.auth"
                         :level="level+1"
-                        @submit="setImport"
       >
       </import-files-sub>
+      <!--      @submit="setImport"-->
     </template>
   </div>
 </template>
@@ -77,7 +81,7 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
-import {Modal as ModalConstructor, ModalCreatorConfig} from '@/lib/ModalLib';
+import {Modal as ModalConstructor, ModalCreatorConfig, ModalFormConstruct} from '@/lib/ModalLib';
 import {ModalMeta, Node} from '@/struct';
 import ContentEditable from '@/components/ContentEditable.vue';
 
@@ -102,7 +106,7 @@ import ContentEditable from '@/components/ContentEditable.vue';
     };
   },
   created: function () {
-    console.debug(this);
+    // console.debug(this);
     return '';
   },
   watch: {},
@@ -126,9 +130,50 @@ import ContentEditable from '@/components/ContentEditable.vue';
       this.list = res;
       this.fold = false;
     },
+    setDelete: async function () {
+      console.info('setDelete');
+    },
+    setUpload: async function () {
+      console.info('setUpload');
+    },
+    setDownload: async function () {
+      console.info('setDownload');
+      const res = await this.$query('local/get', {
+        path: this.path,
+      });
+    },
     setImport: async function (path: string) {
-      // console.info('setImport', path);
-      this.$emit('submit', path);
+      const mvModal = {
+        title: `import [${this.path}] to:`,
+        key: 'setting_directory_import_confirm',
+        alpha: true,
+        single: true,
+        //不可移动的不能调整大小
+        movable: true,
+        resizable: true,
+        width: 480,
+        height: 240,
+        // width: 480,
+        // height: 240,
+        component: {
+          MoveDirectory: {
+            item: {
+              id: -1,
+              id_parent: -1,
+            } as Node,
+            callback: async (to: Node) => {
+              console.debug(to, this.path);
+              return;
+              // console.debug('callback close');
+              const res = await this.$query('file/dir_import', {
+                dir_path: this.path,
+                dir_id: to.id,
+              });
+            },
+          },
+        },
+      } as ModalCreatorConfig;
+      this.$store.commit('modal/push', mvModal);
     },
   },
 })

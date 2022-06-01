@@ -1,9 +1,15 @@
 class BaseController {
-    // async get(): Promise<any> {
+    // async get(
+    //         data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number },
+    //         req: IncomingMessage, res: ServerResponse
+    //     ): Promise<any> {
     //     return 'general get';
     // }
     //
-    // async set(): Promise<any> {
+    // async set(
+    //         data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number },
+    //         req: IncomingMessage, res: ServerResponse
+    //     ): Promise<any> {
     //     return 'general set';
     // }
 }

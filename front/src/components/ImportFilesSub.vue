@@ -84,6 +84,7 @@ import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor, ModalCreatorConfig, ModalFormConstruct} from '@/lib/ModalLib';
 import {ModalMeta, Node} from '@/struct';
 import ContentEditable from '@/components/ContentEditable.vue';
+import config from "@/config";
 
 @Options({
   emits: ['submit'],
@@ -138,9 +139,13 @@ import ContentEditable from '@/components/ContentEditable.vue';
     },
     setDownload: async function () {
       console.info('setDownload');
-      const res = await this.$query('local/get', {
-        path: this.path,
-      });
+      window.open(
+        `${
+          config.content.apiPath
+        }local/get?token=${
+          localStorage.getItem('toshokan_auth_token')
+        }&path=${encodeURIComponent(this.path)}`
+      )
     },
     setImport: async function (path: string) {
       const mvModal = {

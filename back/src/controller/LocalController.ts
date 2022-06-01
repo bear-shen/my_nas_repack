@@ -41,20 +41,23 @@ class LocalController extends BaseController {
         data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number },
         req: IncomingMessage, res: ServerResponse
     ): Promise<any> {
-        const fields = Object.assign({
-            path: '/',
-        }, data.fields);
+        // const fields = Object.assign({
+        //     path: '/',
+        // }, data.fields);
+        const urlInfo = new URL(req.url, `http://${req.headers.host}`);
+        const path = urlInfo.searchParams.get('path');
+        console.info('downloading:', path);
         //
-        let ifExs = await FileLib.getFileStat(fields.path);
-        // console.info(fields.path, ifExs);
+        let ifExs = await FileLib.getFileStat(path);
+        // console.info(path, ifExs);
         if (!ifExs) throw new Error('file not found');
         if (!ifExs.isFile()) throw new Error('target is not a file');
-        const dirIndex = fields.path.lastIndexOf('/');
-        const fileName = fields.path.substring(dirIndex + 1);
+        const dirIndex = path.lastIndexOf('/');
+        const fileName = path.substring(dirIndex + 1);
         // fsNP.createReadStream(fields.path);
         res.statusCode = 200;
         res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`)
-        await writeFileStream(res, fields.path);
+        await writeFileStream(res, path);
         res.end();
         return;
     }

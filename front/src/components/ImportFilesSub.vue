@@ -84,7 +84,7 @@ import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor, ModalCreatorConfig, ModalFormConstruct} from '@/lib/ModalLib';
 import {ModalMeta, Node} from '@/struct';
 import ContentEditable from '@/components/ContentEditable.vue';
-import config from "@/config";
+import config from '@/config';
 
 @Options({
   emits: ['submit'],

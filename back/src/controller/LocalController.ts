@@ -102,9 +102,9 @@ class LocalController extends BaseController {
         if (!ifExs) return;
         // console.info('del', depth, fromPath);
         if (ifExs.isFile()) {
-            await fs.rm(fields.path);
+            await fs.rm(fields.path, {recursive: true, force: true,});
         } else if (ifExs.isDirectory()) {
-            await fs.rmdir(fields.path);
+            await fs.rmdir(fields.path, {recursive: true,});
         }
     }
 }

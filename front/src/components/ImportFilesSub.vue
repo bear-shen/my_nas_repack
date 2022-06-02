@@ -32,6 +32,7 @@
                         :type="item.type"
                         :auth="item.auth"
                         :level="level+1"
+                        :parent-ls="list"
       >
       </import-files-sub>
       <!--      @submit="setImport"-->
@@ -95,6 +96,7 @@ import config from '@/config';
     type: String,
     auth: String,
     level: Number,
+    parentLs: Array,
   },
   components: {
     ContentEditable,
@@ -102,7 +104,13 @@ import config from '@/config';
   },
   data: function () {
     return {
-      list: [],
+      list: [] as {
+        path: string,
+        name: string,
+        size: number,
+        type: string,
+        auth: string,
+      }[],
       fold: true,
     };
   },
@@ -133,9 +141,47 @@ import config from '@/config';
     },
     setDelete: async function () {
       console.info('setDelete');
+      const confirmModal = {
+        title: `confirm to delete [${this.path}]:`,
+        key: 'local_directory_delete_confirm',
+        alpha: true,
+        single: true,
+        //不可移动的不能调整大小
+        movable: true,
+        resizable: true,
+        width: 480,
+        height: 140,
+        // width: 480,
+        // height: 240,
+        text: `confirm to delete [${this.path}]`,
+        callback: [
+          {
+            key: 'confirm',
+            name: 'confirm',
+            callback: (async (form: ModalFormConstruct[], key: string, on: { [key: string]: () => any }) => {
+              // console.info(key, on);
+              // return;
+              await this.$query('local/rm', {
+                path: this.path,
+              });
+              // console.info(this.parentLs);
+              for (let i1 = 0; i1 < this.parentLs.length; i1++) {
+                if (this.parentLs[i1].path !== this.path) continue;
+                this.parentLs.splice(i1, 1);
+                break;
+              }
+              if (on) on.close();
+            })
+          }
+        ]
+      } as ModalCreatorConfig;
+      this.$store.commit('modal/push', confirmModal);
     },
     setUpload: async function () {
-      console.info('setUpload');
+      // console.info('setUpload');
+      await this.$query('local/put', {
+        path: this.path,
+      });
     },
     setDownload: async function () {
       console.info('setDownload');
@@ -149,8 +195,8 @@ import config from '@/config';
     },
     setImport: async function (path: string) {
       const mvModal = {
-        title: `import [${this.path}] to:`,
-        key: 'setting_directory_import_confirm',
+        title: `import content in [${this.path}] to:`,
+        key: 'local_directory_import_confirm',
         alpha: true,
         single: true,
         //不可移动的不能调整大小
@@ -167,8 +213,8 @@ import config from '@/config';
               id_parent: -1,
             } as Node,
             callback: async (to: Node) => {
-              console.debug(to, this.path);
-              return;
+              // console.debug(to, this.path);
+              // return;
               // console.debug('callback close');
               const res = await this.$query('file/dir_import', {
                 dir_path: this.path,

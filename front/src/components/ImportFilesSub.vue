@@ -15,6 +15,7 @@
       </div>
       <div class="meta">
         <a @click.stop="setDelete(path)">Delete</a>
+        <a v-if="type==='directory'" @click.stop="setDir(path)">MKDir</a>
         <a v-if="type==='directory'" @click.stop="setUpload(path)">Upload</a>
         <a v-if="type==='file'" @click.stop="setDownload(path)">Download</a>
         <a v-if="type==='directory'" @click.stop="setImport(path)">Import</a>
@@ -140,7 +141,7 @@ import config from '@/config';
       this.fold = false;
     },
     setDelete: async function () {
-      console.info('setDelete');
+      // console.info('setDelete');
       const confirmModal = {
         title: `confirm to delete [${this.path}]:`,
         key: 'local_directory_delete_confirm',
@@ -177,6 +178,55 @@ import config from '@/config';
       } as ModalCreatorConfig;
       this.$store.commit('modal/push', confirmModal);
     },
+    setDir: async function () {
+      const confirmModal = {
+        title: `confirm to mkdir in [${this.path}]:`,
+        key: 'local_directory_create_confirm',
+        alpha: true,
+        single: true,
+        //不可移动的不能调整大小
+        movable: true,
+        resizable: true,
+        width: 480,
+        height: 140,
+        // width: 480,
+        // height: 240,
+        form: [
+          {
+            key: 'directory name',
+            type: 'text',
+            value: '',
+          }
+        ],
+        callback: [
+          {
+            key: 'confirm',
+            name: 'confirm',
+            callback: (async (form: ModalFormConstruct[], key: string, on: { [key: string]: () => any }) => {
+              console.info(key, on);
+              return;
+              await this.$query('local/mkdir', {
+                path: this.path,
+              });
+              // console.info(this.parentLs);
+              for (let i1 = 0; i1 < this.parentLs.length; i1++) {
+                if (this.parentLs[i1].path !== this.path) continue;
+                this.parentLs.push({
+                  path: '',
+                  name: '',
+                  size: 0,
+                  type: '',
+                  auth: '',
+                });
+                break;
+              }
+              if (on) on.close();
+            })
+          }
+        ]
+      } as ModalCreatorConfig;
+      this.$store.commit('modal/push', confirmModal);
+    },
     setUpload: async function () {
       // console.info('setUpload');
       await this.$query('local/put', {
@@ -184,7 +234,7 @@ import config from '@/config';
       });
     },
     setDownload: async function () {
-      console.info('setDownload');
+      // console.info('setDownload');
       window.open(
         `${
           config.content.apiPath

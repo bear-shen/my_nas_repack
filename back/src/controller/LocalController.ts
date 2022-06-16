@@ -66,6 +66,7 @@ class LocalController extends BaseController {
         let file: File;
         const fields = Object.assign({
             path: '/',
+            name: '/',
         }, data.fields);
         //
         for (const filesKey in data.files) {
@@ -77,7 +78,10 @@ class LocalController extends BaseController {
             if (!ifExs.isFile()) throw new Error('target is not a file');
             await fs.rm(fields.path);
         }
-        await fs.rename(file.filepath, fields.path);
+        await fs.rename(
+            file.filepath,
+            `${fields.path}/${fields.name}`
+        );
     }
 
     async mkdir(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {

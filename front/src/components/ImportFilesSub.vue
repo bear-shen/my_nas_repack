@@ -113,6 +113,7 @@ import config from '@/config';
         auth: string,
       }[],
       fold: true,
+      uploadDOM: null,
     };
   },
   created: function () {
@@ -194,6 +195,7 @@ import config from '@/config';
         form: [
           {
             key: 'directory name',
+            name: 'directory name',
             type: 'text',
             value: '',
           }
@@ -203,22 +205,29 @@ import config from '@/config';
             key: 'confirm',
             name: 'confirm',
             callback: (async (form: ModalFormConstruct[], key: string, on: { [key: string]: () => any }) => {
-              console.info(key, on);
-              return;
+              form[0].value = form[0].value.trim();
+              const targetPath = `${this.path}/${form[0].value}`;
+              if (!form[0].value.length) return;
+              // console.info(key, on, targetPath);
               await this.$query('local/mkdir', {
-                path: this.path,
+                path: targetPath,
               });
               // console.info(this.parentLs);
-              for (let i1 = 0; i1 < this.parentLs.length; i1++) {
-                if (this.parentLs[i1].path !== this.path) continue;
-                this.parentLs.push({
-                  path: '',
-                  name: '',
-                  size: 0,
-                  type: '',
-                  auth: '',
-                });
+              let dup = false;
+              for (let i1 = 0; i1 < this.list.length; i1++) {
+                if (this.list[i1].path !== targetPath) continue;
+                dup = true;
                 break;
+              }
+              await this.fetch();
+              if (!dup) {
+                this.list.push({
+                  path: targetPath,
+                  name: form[0].value,
+                  size: 0,
+                  type: 'directory',
+                  auth: '40755',
+                });
               }
               if (on) on.close();
             })
@@ -229,9 +238,7 @@ import config from '@/config';
     },
     setUpload: async function () {
       // console.info('setUpload');
-      await this.$query('local/put', {
-        path: this.path,
-      });
+      this.createUploadEvt();
     },
     setDownload: async function () {
       // console.info('setDownload');
@@ -275,6 +282,22 @@ import config from '@/config';
         },
       } as ModalCreatorConfig;
       this.$store.commit('modal/push', mvModal);
+    },
+    createUploadEvt: function () {
+      this.uploadDOM = document.createElement('input');
+      this.uploadDOM.type = 'file';
+      this.uploadDOM.addEventListener('change', this.uploadEvt);
+      this.uploadDOM.click();
+    },
+    uploadEvt: function (e: any) {
+      console.info(e, this.uploadDOM.files);
+      if (!this.uploadDOM.files.length) return;
+      const file = this.uploadDOM.files[0] as File;
+      this.$query('local/put', {
+        path: this.path,
+        name: file.name,
+        file: file,
+      });
     },
   },
 })

@@ -85,13 +85,14 @@ async function videoStr(meta: any)
         let vStr = '';
         if (tranV || tranR) {
             const vConf = convertConfig.v_normal;
+            let rate = 0;
             switch (vConf.cur_lib) {
                 default:
                 case 'libx264':
                     vStr = `-c:v ${vConf.libx264.codec_lib} -crf ${isSmall ? vConf.libx264.quality_small : vConf.libx264.quality} -pix_fmt ${vConf.libx264.pixFmt} ${tranSize}`;
                     break;
                 case 'h264_nvenc':
-                    const rate = isSmall ? vConf.h264_nvenc.target_rate_small : vConf.h264_nvenc.target_rate;
+                    rate = isSmall ? vConf.h264_nvenc.target_rate_small : vConf.h264_nvenc.target_rate;
                     vStr = `-c:v ${
                         vConf.h264_nvenc.codec_lib
                     } -preset ${vConf.h264_nvenc.preset} -pix_fmt ${vConf.h264_nvenc.pixFmt} -b:v ${
@@ -102,7 +103,25 @@ async function videoStr(meta: any)
                         Math.round(rate / 4)
                     }k -bufsize:v ${
                         rate * 5
-                    }k -rc-lookahead ${vConf.h264_nvenc.lookahead}k ${tranSize}`;
+                    }k -rc-lookahead ${vConf.h264_nvenc.lookahead} ${tranSize}`;
+                    break;
+                case 'hevc_nvenc':
+                    rate = isSmall ? vConf.hevc_nvenc.target_rate_small : vConf.hevc_nvenc.target_rate;
+                    vStr = `-c:v ${
+                        vConf.hevc_nvenc.codec_lib
+                    } -preset ${vConf.hevc_nvenc.preset} -pix_fmt ${vConf.hevc_nvenc.pixFmt} -b:v ${
+                        rate
+                    }k -maxrate:v ${
+                        rate * 8
+                    }k -minrate:v ${
+                        Math.round(rate / 4)
+                    }k -bufsize:v ${
+                        rate * 10
+                    }k -rc-lookahead ${
+                        vConf.hevc_nvenc.lookahead
+                    } -bf ${
+                        vConf.hevc_nvenc.bf
+                    } ${tranSize}`;
                     break;
             }
 

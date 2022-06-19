@@ -87,6 +87,18 @@ export default {
                 lookahead: 40,
                 preset: 'slow',
             },
+            hevc_nvenc: {
+                codec_lib: 'hevc_nvenc',
+                pixFmt: 'p010le',
+                //bufsize *= 10
+                //maxrate *= 8
+                //minrate /= 4
+                target_rate: 4000,
+                target_rate_small: 2500,
+                lookahead: 80,
+                bf: 4,
+                preset: 'slow',
+            },
         },
         a_normal: {
             quality: 1.5,  //+- 110

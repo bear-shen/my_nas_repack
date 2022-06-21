@@ -251,6 +251,8 @@ import config from '@/config';
       )
     },
     setImport: async function (path: string) {
+      //导入A到B
+      //A文件夹下的文件导入到B中
       const mvModal = {
         title: `import content in [${this.path}] to:`,
         key: 'local_directory_import_confirm',

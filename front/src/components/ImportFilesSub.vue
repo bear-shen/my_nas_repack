@@ -289,15 +289,24 @@ import config from '@/config';
       this.uploadDOM.addEventListener('change', this.uploadEvt);
       this.uploadDOM.click();
     },
-    uploadEvt: function (e: any) {
+    uploadEvt: async function (e: any) {
       console.info(e, this.uploadDOM.files);
       if (!this.uploadDOM.files.length) return;
       const file = this.uploadDOM.files[0] as File;
-      this.$query('local/put', {
+      await this.$query('local/put', {
         path: this.path,
         name: file.name,
         file: file,
       });
+      if (this.list.length) {
+        this.list.push({
+          path: `${this.path}/${file.name}`,
+          name: file.name,
+          size: file.size,
+          type: 'file',
+          auth: '40755',
+        });
+      }
     },
   },
 })

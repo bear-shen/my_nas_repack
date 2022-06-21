@@ -75,13 +75,17 @@ class LocalController extends BaseController {
         //
         let ifExs = await FileLib.getFileStat(fields.path);
         if (ifExs) {
-            if (!ifExs.isFile()) throw new Error('target is not a file');
-            await fs.rm(fields.path);
+            if (ifExs.isFile()) throw new Error('target dir is a file');
         }
-        await fs.rename(
-            file.filepath,
-            `${fields.path}/${fields.name}`
-        );
+        //
+        let targetPath = `${fields.path}/${fields.name}`;
+        let ifFExs = await FileLib.getFileStat(targetPath);
+        if (ifFExs) {
+            if (!ifFExs.isFile()) throw new Error('target is a file');
+            await fs.rm(targetPath);
+        }
+        await fs.rename(file.filepath, targetPath);
+        await fs.chmod(targetPath, 0o755);
     }
 
     async mkdir(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {

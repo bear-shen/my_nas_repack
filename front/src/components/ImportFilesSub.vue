@@ -226,7 +226,7 @@ import config from '@/config';
                   name: form[0].value,
                   size: 0,
                   type: 'directory',
-                  auth: '40755',
+                  auth: '40766',
                 });
               }
               if (on) on.close();
@@ -304,7 +304,7 @@ import config from '@/config';
           name: file.name,
           size: file.size,
           type: 'file',
-          auth: '40755',
+          auth: '40766',
         });
       }
     },

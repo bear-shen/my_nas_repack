@@ -85,7 +85,7 @@ class LocalController extends BaseController {
             await fs.rm(targetPath);
         }
         await fs.rename(file.filepath, targetPath);
-        await fs.chmod(targetPath, 0o755);
+        await fs.chmod(targetPath, 0o766);
     }
 
     async mkdir(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {
@@ -99,6 +99,7 @@ class LocalController extends BaseController {
             return;
         }
         await fs.mkdir(fields.path, {recursive: true,});
+        await fs.chmod(fields.path, 0o766);
     }
 
     async rm(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {

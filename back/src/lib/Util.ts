@@ -261,7 +261,7 @@ const Util = {
                 cStart = cStart + cName.length + 1;
                 let cEnd = document.cookie.indexOf(';', cStart);
                 if (cEnd === -1) cEnd = document.cookie.length;
-                return unescape(document.cookie.substring(cStart, cStart+cEnd))
+                return unescape(document.cookie.substring(cStart, cStart + cEnd))
             }
         }
         return ''
@@ -449,6 +449,14 @@ const Util = {
         }
         if (!exist) classArr.push(className);
         element.className = Array.prototype.join.call(classArr, ' ');  // 把数组转成字符串并赋值
+    },
+    template: function (template: string, data: { [key: string]: any }): string {
+        let target = template;
+        for (const dataKey in data) {
+            if (!Object.prototype.hasOwnProperty.call(data, dataKey)) continue;
+            target.replace('{' + dataKey + '}', data[dataKey]);
+        }
+        return target;
     },
 };
 export default Util;

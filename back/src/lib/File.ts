@@ -8,29 +8,21 @@ import TagGroupModel from "../model/TagGroupModel";
 import * as Buffer from "buffer";
 import QueueModel from "../model/QueueModel";
 import {Stats} from "node:fs";
+import Util from "./Util";
+import {ExecException} from "child_process";
 
-const md5 = require('md5');
+const util = require('util');
 const crypt = require('crypto');
+const child_process = require('child_process');
 
-function getFileHash(input: fsNP.ReadStream | string): Promise<string> {
+function getFileHash(input: string): Promise<string> {
     return new Promise((resolve) => {
-        //
-        let rs: fsNP.ReadStream;
-        if (typeof input === 'string') {
-            rs = fsNP.createReadStream(input);
-        } else {
-            rs = input;
-        }
-        //
-        const hash = crypt.createHash('md5');
-        rs.on('data', (buffer: Buffer) => {
-            hash.update(buffer, 'binary');
-        });
-        rs.on('end', () => {
-            const hashCheckSum = hash.digest();
-            // console.info(hashCheckSum, );
-            resolve(hashCheckSum.toString('hex'));
-        })
+        child_process.exec(
+            Config.hashFunction.replace('{fileName}', input),
+            (e: ExecException, stdout: string, stderr: string,) => {
+                resolve(stdout);
+            }
+        );
     })
 }
 
@@ -51,7 +43,8 @@ async function makeFileDir(sourcePath: string, isRel: boolean = true): Promise<s
 }
 
 function makeHashPath(hash: string): string {
-    return `${hash.slice(0, 2)}/${hash.slice(2, 4)}/${hash.slice(4, 32)}`;
+    return `${hash.slice(0, 2)}/${hash.slice(2, 4)}/${hash.slice(4)}`;
+    // return `${hash.slice(0, 2)}/${hash.slice(2, 4)}/${hash.slice(4, 32)}`;
 }
 
 function makePath(

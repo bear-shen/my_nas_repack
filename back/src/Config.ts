@@ -25,6 +25,7 @@ export default {
     fileRoot: process.cwd() + '/../file/',
     webFileRoot: '/file/',
     webDavRoot: '/webdav/',
+    hashFunction: process.cwd() + '/binary/b3sum_linux_x64_bin --no-names {fileName}',
     // webFileRoot: 'http://sample.org/file/',
     fileParseConfig: {
         //@see https://slhck.info/video/2017/02/24/vbr-settings.html

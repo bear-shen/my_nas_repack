@@ -20,7 +20,7 @@ function getFileHash(input: string): Promise<string> {
         child_process.exec(
             Config.hashFunction.replace('{fileName}', input),
             (e: ExecException, stdout: string, stderr: string,) => {
-                resolve(stdout);
+                resolve(stdout.trim());
             }
         );
     })
@@ -43,7 +43,7 @@ async function makeFileDir(sourcePath: string, isRel: boolean = true): Promise<s
 }
 
 function makeHashPath(hash: string): string {
-    return `${hash.slice(0, 2)}/${hash.slice(2, 4)}/${hash.slice(4)}`;
+    return `${hash.slice(0, 2)}/${hash.slice(2, 4)}/${hash.slice(4)}`.trim();
     // return `${hash.slice(0, 2)}/${hash.slice(2, 4)}/${hash.slice(4, 32)}`;
 }
 

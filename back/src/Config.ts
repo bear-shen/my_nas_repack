@@ -105,7 +105,7 @@ export default {
             quality: 1.5,  //+- 110
             format: 'aac',
             codec_lib: 'aac',
-            allow_codec: ['mp3', 'aac',],
+            allow_codec: ['flac', 'mp3', 'aac', 'wav',],
             allow_container: ['flac', 'mp3', 'aac', 'wav',],
             // allow_rate: 120 * 1000,
             allow_rate: 1024 * 1024,

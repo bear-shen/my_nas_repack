@@ -35,20 +35,20 @@ async function videoStr(meta: any)
     }
     let tranA = false;
     for (const aStream of aLs) {
-        if (convertConfig.a_normal.allow_codec.indexOf(aStream.codec_name) !== -1)
+        if (convertConfig.a_normal.allow_codec.indexOf(aStream.codec_name.toLowerCase()) !== -1)
             continue;
         tranA = true;
     }
     let tranV = false;
     for (const vStream of vLs) {
-        if (convertConfig.v_normal.allow_codec.indexOf(vStream.codec_name) !== -1)
+        if (convertConfig.v_normal.allow_codec.indexOf(vStream.codec_name.toLowerCase()) !== -1)
             continue;
         tranV = true;
     }
     // console.info(meta.format.format_name, convertConfig.v_normal.allow_container);
     let tranC = true;
     for (const container of convertConfig.v_normal.allow_container) {
-        if (meta.format.format_name.indexOf(container) === -1) continue;
+        if (meta.format.format_name.toLowerCase().indexOf(container) === -1) continue;
         tranC = false;
         break;
     }

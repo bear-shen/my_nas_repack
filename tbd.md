@@ -41,12 +41,15 @@
     - https://github.com/Cyan4973/xxHash
     - http://cyan4973.github.io/xxHash/
     - [What is the difference between a Hash Function and a Cryptographic Hash Function?](https://security.stackexchange.com/questions/11839/what-is-the-difference-between-a-hash-function-and-a-cryptographic-hash-function)
+    - https://github.com/BLAKE3-team/BLAKE3
+    - https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
     - blake3 -> b3sum
     - blake2
     - sm3
     - `openssl help`
   - 响应速度太慢会导致超时，这块考虑一下
 - 文件上传状态好像有bug
+- 压平文件夹，用setting的ui然后套接directory的逻辑和组件
 - 还有文本编辑器最好也搞一个，或者集成vscode也行
 - 设置页做成了tab的形式
     - 除了导入以外看看有没有什么可以添加的

@@ -27,12 +27,12 @@ const routes: Array<RouteRecordRaw> = [
         component: Directory,
         meta: {icon: 'sysIcon_star-o',},
       },*/
-      /*{
-        path: '/share',
-        name: 'Share',
+      {
+        path: '/media',
+        name: 'Media',
         component: Directory,
-        meta: {icon: 'sysIcon_link',},
-      },*/
+        meta: {icon: 'sysIcon_star-o',},
+      },
       {
         path: '/recycle',
         name: 'Recycle',

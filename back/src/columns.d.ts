@@ -1,9 +1,11 @@
+type FileType = 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle' | 'pdf';
+
 interface NodeCol {
     id?: number,
     id_parent?: number,
     // id_cover?: number,
     // id_file?: number,
-    type?: 'audio' | 'video' | 'image' | 'binary' | 'text' | 'directory' | 'subtitle',
+    type?: FileType | 'directory',
     title?: string,
     description?: string,
     sort?: number,
@@ -38,7 +40,7 @@ interface NodeCol {
 interface FileCol {
     id?: number,
     hash?: string,
-    type?: 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle',
+    type?: FileType,
     suffix?: string,
     // path?: { [key: string]: any },
     path: string

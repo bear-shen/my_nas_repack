@@ -1,4 +1,14 @@
-import {Modal, ModalComponentConstruct} from './lib/ModalLib';
+import {
+  FileType,
+  NodeCol,
+  FileCol,
+  UserGroupCol,
+  UserCol,
+  TagGroupCol,
+  TagCol,
+  AuthCol,
+  QueueCol,
+} from './columns';
 
 type TagItem = TagCol;
 

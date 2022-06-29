@@ -4,7 +4,7 @@
            v-model="search"
            placeholder="something to search ..."
     />
-    <!--    @keydown="get"-->
+    <!--  keydown的事件会慢一个字  @keydown="get"-->
     <ul class="hinter_selector" v-if="active">
       <li v-for="(item,index) in list"
           :key="index"
@@ -82,6 +82,10 @@ import {Options, Vue} from 'vue-class-component'
   methods: {
     get: async function () {
       // console.debug(this.search);
+      if (this.value && this.search === this.value) {
+        this.active = false;
+        return;
+      }
       if (!this.search) {
         this.active = false;
         return;
@@ -100,8 +104,13 @@ import {Options, Vue} from 'vue-class-component'
     },
     set: async function (index: number) {
       this.active = false;
+      // this.search = this.process(this.list[index]);
       this.search = '';
       await this.submit(this.list[index], this.extra);
+      console.info(this.search, this.value, this);
+      if (this.value) {
+        this.search = this.value;
+      }
     },
     inactive: function () {
       this.active = false;

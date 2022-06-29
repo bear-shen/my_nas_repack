@@ -357,7 +357,7 @@ import fileList from '@/demo/getFileList';
 
 import Hinter from '@/components/Hinter.vue';
 import ContentEditable from '@/components/ContentEditable.vue';
-import {Node, Tag as TagStruct, TagGroup} from '@/struct';
+import {NodeItem, TagItem, TagGroupItem} from '@/struct';
 
 @Options({
   components: {Hinter, ContentEditable,},
@@ -459,7 +459,7 @@ import {Node, Tag as TagStruct, TagGroup} from '@/struct';
         dir: {id: 0, title: 'root'},
         tree: {id: [0], title: ['root']},
         sub: [],
-      } as TagGroup;
+      } as TagGroupItem;
       this.groupList.push(cGroup);
       this.cGroup = cGroup;
     },
@@ -500,7 +500,7 @@ import {Node, Tag as TagStruct, TagGroup} from '@/struct';
     },
     edit_tag: async function (index: number) {
       if (this.cTag[index].edit) {
-        const tag = this.cTag[index] as TagStruct;
+        const tag = this.cTag[index] as TagItem;
         const queryRes = await this.$query(
           'tag/mod', {
             id: tag.id,
@@ -513,7 +513,7 @@ import {Node, Tag as TagStruct, TagGroup} from '@/struct';
       this.cTag[index].edit = !this.cTag[index].edit;
     },
     del_tag: async function (index: number) {
-      const tag = this.cTag[index] as TagStruct;
+      const tag = this.cTag[index] as TagItem;
       if (this.cTag[index].id) {
         const queryRes = await this.$query('tag/delete', {id: tag.id,});
         if (queryRes === false) return;
@@ -529,7 +529,7 @@ import {Node, Tag as TagStruct, TagGroup} from '@/struct';
         description: 'description',
         status: 1,
         edit: 1,
-      } as TagStruct);
+      } as TagItem);
     },
     add_alt: function (index: number) {
       this.cTag[index].alt.push('');
@@ -553,14 +553,14 @@ import {Node, Tag as TagStruct, TagGroup} from '@/struct';
       // console.debug(fileList);
       return queryRes.list;
     },
-    dir_hinter_process: function (item: Node) {
+    dir_hinter_process: function (item: NodeItem) {
       return `${
         (item.tree?.title as Array<string>).join(' \\ ')
       } \\ ${
         item.title
       }`;
     },
-    dir_hinter_submit: function (item: Node,) {
+    dir_hinter_submit: function (item: NodeItem,) {
       console.info(item,);
       Object.assign(
         this.cGroup, {

@@ -190,7 +190,7 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor} from '@/lib/ModalLib';
-import {ModalMeta, Node, BrowserMeta} from '@/struct';
+import {ModalMeta, NodeItem, BrowserMeta} from '@/struct';
 import fileListDemo from '@/demo/getFileList';
 import ImageBrowser from './browser/Image.vue';
 import VideoBrowser from './browser/Video.vue';
@@ -203,7 +203,7 @@ import BrowserBase from '@/modal/browser/Base.vue';
   props: {
     modalMeta: Object as unknown as ModalMeta
     // input: Object as unknown as {
-    //   item: Node,
+    //   item: NodeItem,
     // },
     //模态框的基本设置
     // modal: Object as unknown as ModalConstructor,
@@ -219,9 +219,9 @@ import BrowserBase from '@/modal/browser/Base.vue';
   },
   data: function () {
     return {
-      list: [] as Array<Node>,
+      list: [] as Array<NodeItem>,
       cur: 0,
-      item: false as unknown as Node,
+      item: false as unknown as NodeItem,
       show_detail: false,
       has_next: false,
       has_prev: false,

@@ -66,7 +66,7 @@ import {Options, Vue} from 'vue-class-component'
 import fileListDemo from '@/demo/getFileList';
 import {Modal as ModalConstructor} from '@/lib/ModalLib';
 import Modal from '@/framework/Modal.vue';
-import {ModalMeta, Node} from '@/struct';
+import {ModalMeta, NodeItem} from '@/struct';
 
 @Options({
   emits: ['close'],
@@ -74,8 +74,8 @@ import {ModalMeta, Node} from '@/struct';
     modalMeta: Object as unknown as (
       ModalMeta & {
       data?: {
-        callback?: (item: Node) => any,
-        data?: Node,
+        callback?: (item: NodeItem) => any,
+        data?: NodeItem,
       }
     }),
     // input: Object,
@@ -125,7 +125,7 @@ import {ModalMeta, Node} from '@/struct';
           id: 0,
           title: 'root',
           tree: {id: [], title: [],},
-        } as unknown as Node);
+        } as unknown as NodeItem);
       }
       this.list = queryRes.list;
     },

@@ -313,7 +313,7 @@ import {Options, Vue} from 'vue-class-component'
 import Hinter from '@/components/Hinter.vue';
 import tagListDemo from '@/demo/getTagList';
 import {Modal as ModalConstructor, createModal, ModalCreatorConfig} from '@/lib/ModalLib'
-import {ModalMeta, Node, TagGroup} from '@/struct';
+import {ModalMeta, NodeItem, TagGroupItem} from '@/struct';
 
 @Options({
   components: {
@@ -322,7 +322,7 @@ import {ModalMeta, Node, TagGroup} from '@/struct';
   emits: ['go', 'delete'],
   props: {
     index: Number,
-    item: Object as Node,
+    item: Object as NodeItem,
     mode: String,
   },
   data: function () {
@@ -372,7 +372,7 @@ import {ModalMeta, Node, TagGroup} from '@/struct';
         component: {
           MoveDirectory: {
             item: this.item,
-            callback: async (to: Node) => {
+            callback: async (to: NodeItem) => {
               // console.debug(index, (this.modalMeta as ModalMeta).data.item, this.list[index]);
               const queryRes = await this.$query(
                 'file/move', {
@@ -503,7 +503,7 @@ import {ModalMeta, Node, TagGroup} from '@/struct';
     tag_hinter_fetch: async function (keyword: any) {
       console.debug('tag_hinter_fetch');
       const res = await this.$query('tag/list', {
-        title: keyword, id_dir: (this.item as Node).id_parent,
+        title: keyword, id_dir: (this.item as NodeItem).id_parent,
         with_group_meta: 1,
       });
       if (res === false) return;
@@ -522,7 +522,7 @@ import {ModalMeta, Node, TagGroup} from '@/struct';
           node_id: this.item.id,
         });
       if (queryRes === false) return;
-      if (!this.item.tag) this.item.tag = [] as Array<TagGroup>;
+      if (!this.item.tag) this.item.tag = [] as Array<TagGroupItem>;
       let groupIndex = -1;
       let itemIndex = -1;
       for (let i1 = 0; i1 < this.item.tag.length; i1++) {

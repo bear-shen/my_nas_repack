@@ -1,4 +1,4 @@
-import {Node} from '../struct';
+import {NodeItem} from '@/struct';
 
 const demos = [
   //--- folder ---
@@ -592,6 +592,6 @@ const demos = [
       title: ['root', 'path1', 'path2', 'path3', 'path4',],
     },
   },
-] as Array<Node>;
+] as Array<NodeItem>;
 
 export default demos;

@@ -147,7 +147,7 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor} from '@/lib/ModalLib';
-import {BrowserMeta, ModalMeta, Node} from '@/struct';
+import {BrowserMeta, ModalMeta, NodeItem} from '@/struct';
 import fileListDemo from '@/demo/getFileList';
 import BrowserBase from './Base.vue';
 
@@ -155,7 +155,7 @@ import BrowserBase from './Base.vue';
   props: {
     modalMeta: Object as unknown as ModalMeta,
     browserMeta: Object as unknown as BrowserMeta,
-    item: Object as unknown as Node,
+    item: Object as unknown as NodeItem,
   },
   components: {
     BrowserBase

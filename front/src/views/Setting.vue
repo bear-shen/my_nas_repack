@@ -71,7 +71,7 @@
 import {Options, Vue} from 'vue-class-component'
 import HelloWorld from '@/components/HelloWorld.vue'
 import ContentEditable from '@/components/ContentEditable.vue';
-import {Node} from '@/struct';
+import {NodeItem} from '@/struct';
 import {ModalCreatorConfig} from '@/lib/ModalLib';
 // import ImportFiles from '@/views/SettingTab/ImportFiles.vue';
 import Demo from '@/views/SettingTab/Demo.vue';

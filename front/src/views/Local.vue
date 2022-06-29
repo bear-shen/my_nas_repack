@@ -50,7 +50,7 @@ import userList from '@/demo/getUserList';
 import fileList from '@/demo/getFileList';
 import Hinter from '@/components/Hinter.vue';
 import UserListInGroup from '@/components/UserListInGroup.vue';
-import {ModalMeta, Node} from '@/struct';
+import {ModalMeta, NodeItem} from '@/struct';
 import ContentEditable from '@/components/ContentEditable.vue';
 import ImportFilesSub from '@/components/ImportFilesSub.vue';
 import {ModalCreatorConfig, ModalFormConstruct} from '@/lib/ModalLib';
@@ -109,8 +109,8 @@ import {ModalCreatorConfig, ModalFormConstruct} from '@/lib/ModalLib';
             item: {
               id: -1,
               id_parent: -1,
-            } as Node,
-            callback: async (to: Node) => {
+            } as NodeItem,
+            callback: async (to: NodeItem) => {
               console.debug(to);
               this.to_dir = to;
               this.to = to.id;

@@ -223,7 +223,7 @@ import {Options, Vue} from 'vue-class-component'
 import DirectoryItem from '@/components/DirectoryItem.vue';
 import fileListDemo from '@/demo/getFileList';
 import {ModalCreatorConfig} from '@/lib/ModalLib';
-import {Node} from '@/struct';
+import {NodeItem} from '@/struct';
 
 @Options({
   components: {
@@ -244,8 +244,8 @@ import {Node} from '@/struct';
         // is_file: false,
       },
       page_size: 0,
-      cur_dir: {} as Node,
-      list: [] as Array<Node>,
+      cur_dir: {} as NodeItem,
+      list: [] as Array<NodeItem>,
     };
   },
   created: function () {
@@ -389,7 +389,7 @@ import {Node} from '@/struct';
       query.tag = tagId;
       this.$router.push({path: this.$route.path, query});
     },
-    goDetail: function (item: Node) {
+    goDetail: function (item: NodeItem) {
       //注意：导航条上转入的时候只有文件id
       if (!item.is_file) {
         const query = {} as { [key: string]: any };

@@ -98,7 +98,7 @@ import {Options, Vue} from 'vue-class-component'
 import fileListDemo from '@/demo/getFileList';
 import {Modal as ModalConstructor} from '@/lib/ModalLib';
 import Modal from '@/framework/Modal.vue';
-import {ModalMeta, Node} from '@/struct';
+import {ModalMeta, NodeItem} from '@/struct';
 import {CurlData} from '@/utils/util';
 
 class fileDef {
@@ -228,7 +228,7 @@ class fileDef {
       console.debug('queueUpload', item.name, item);
       item.status = 'uploading';
       const formData = new FormData();
-      const node = (this.modalMeta as ModalMeta).data.item as Node;
+      const node = (this.modalMeta as ModalMeta).data.item as NodeItem;
       formData.set(
         'parent_id',
         node.id ? `${1 * node.id}` : ''

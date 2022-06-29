@@ -150,7 +150,7 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor} from '@/lib/ModalLib';
-import {BrowserMeta, ModalMeta, Node} from '@/struct';
+import {BrowserMeta, ModalMeta, NodeItem} from '@/struct';
 import fileListDemo from '@/demo/getFileList';
 
 @Options({
@@ -158,16 +158,16 @@ import fileListDemo from '@/demo/getFileList';
   props: {
     modalMeta: Object as unknown as ModalMeta,
     browserMeta: Object as unknown as BrowserMeta,
-    item: Object as unknown as Node,
+    item: Object as unknown as NodeItem,
   },
   components: {},
   data: function () {
     return {
-      list: [] as Array<Node>,
+      list: [] as Array<NodeItem>,
       playMode: 'loop',
       // dt: true,
       // cur: 0,
-      // item: false as unknown as Node,
+      // item: false as unknown as NodeItem,
       // show_detail: false,
     };
   },

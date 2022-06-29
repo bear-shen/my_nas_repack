@@ -1,4 +1,4 @@
-import {UserGroup} from '@/struct';
+import {UserGroupItem} from '@/struct';
 
 const demos = [
   {
@@ -250,6 +250,6 @@ const demos = [
       },
     ]
   },
-] as Array<UserGroup>;
+] as Array<UserGroupItem>;
 
 export default demos;

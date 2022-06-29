@@ -7,7 +7,7 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor, ModalCreatorConfig} from '@/lib/ModalLib';
-import {ModalMeta, Node} from '@/struct';
+import {ModalMeta, NodeItem} from '@/struct';
 
 @Options({
   emits: ['close'],
@@ -57,8 +57,8 @@ import {ModalMeta, Node} from '@/struct';
             item: {
               id: -1,
               id_parent: -1,
-            } as Node,
-            callback: async (to: Node) => {
+            } as NodeItem,
+            callback: async (to: NodeItem) => {
               console.debug(to);
               this.imp.to_dir = to;
               this.imp.to = to.id;

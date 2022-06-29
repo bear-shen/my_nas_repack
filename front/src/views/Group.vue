@@ -191,7 +191,7 @@ import userList from '@/demo/getUserList';
 import fileList from '@/demo/getFileList';
 import Hinter from '@/components/Hinter.vue';
 import UserListInGroup from '@/components/UserListInGroup.vue';
-import {Node} from '@/struct';
+import {NodeItem} from '@/struct';
 
 @Options({
   components: {Hinter, UserListInGroup,},
@@ -288,14 +288,14 @@ import {Node} from '@/struct';
       // console.debug(fileList);
       return queryRes.list;
     },
-    dir_hinter_process: function (item: Node) {
+    dir_hinter_process: function (item: NodeItem) {
       return `${
         (item.tree?.title as Array<string>).join(' \\ ')
       } \\ ${
         item.title
       }`;
     },
-    dir_hinter_submit: function (item: Node, meta: Array<number>) {
+    dir_hinter_submit: function (item: NodeItem, meta: Array<number>) {
       console.debug('dir_hinter_submit', item, meta);
       Object.assign(
         this.list[meta[0]].auth[meta[1]], {

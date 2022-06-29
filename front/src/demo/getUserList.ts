@@ -1,4 +1,4 @@
-import {User} from '@/struct';
+import {UserItem} from '@/struct';
 
 const demos = [
   {
@@ -64,6 +64,6 @@ const demos = [
     time_create: '1919-08-10 11:45:14',
     time_update: '1919-08-10 11:45:14',
   },
-] as Array<User>;
+] as Array<UserItem>;
 
 export default demos;

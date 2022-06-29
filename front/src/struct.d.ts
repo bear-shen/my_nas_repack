@@ -1,8 +1,8 @@
 import {Modal, ModalComponentConstruct} from './lib/ModalLib';
 
-type Tag = TagCol;
+type TagItem = TagCol;
 
-type TagGroup = TagGroupCol & {
+type TagGroupItem = TagGroupCol & {
   dir?: {
     id?: number; title?: string;
   };
@@ -10,14 +10,14 @@ type TagGroup = TagGroupCol & {
     id?: Array<number>;
     title?: Array<string>;
   };
-  sub?: Tag[];
+  sub?: TagItem[];
 }
 
-type User = UserCol;
+type UserItem = UserCol;
 
-type UserGroup = UserGroupCol & {
-  user?: Array<User>;
-  auth?:Array<{
+type UserGroupItem = UserGroupCol & {
+  user?: Array<UserItem>;
+  auth?: Array<{
     id_dir: number;
     allow_r: boolean | number,
     allow_w: boolean | number,
@@ -31,7 +31,7 @@ type UserGroup = UserGroupCol & {
   }>;
 }
 
-type File = FileCol & {
+type FileItem = FileCol & {
   path_cover?: string;
   path_preview?: string;
   path_raw?: string;
@@ -40,17 +40,17 @@ type File = FileCol & {
   // public path_raw?: string;
 }
 
-type Node = NodeCol & {
+type NodeItem = NodeCol & {
   is_file?: number;
   is_fav?: number;
-  cover?: File;
+  cover?: FileItem;
   //这么写方便操作，反正这块后端也得手工处理
   tree?: {
     id?: Array<number>;
     title?: Array<string>;
   };
-  tag?: Array<TagGroup>;
-  file?: File;
+  tag?: Array<TagGroupItem>;
+  file?: FileItem;
 }
 
 interface ModalMeta {

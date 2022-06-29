@@ -1,4 +1,4 @@
-import {TagGroup} from '@/struct';
+import {TagGroupItem} from '@/struct';
 
 const demos = [
   {
@@ -169,6 +169,6 @@ const demos = [
       },
     ]
   },
-] as Array<TagGroup>;
+] as Array<TagGroupItem>;
 
 export default demos;

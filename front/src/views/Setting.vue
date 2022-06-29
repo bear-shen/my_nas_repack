@@ -11,7 +11,7 @@
       </div>
     </div>
     <component
-      class="setting_content" :is="cur.model"
+      class="setting_content" :is="cur.model" :markRaw="true"
     ></component>
   </div>
 </template>
@@ -75,6 +75,8 @@ import {NodeItem} from '@/struct';
 import {ModalCreatorConfig} from '@/lib/ModalLib';
 // import ImportFiles from '@/views/SettingTab/ImportFiles.vue';
 import Demo from '@/views/SettingTab/Demo.vue';
+import AddMedia from '@/views/SettingTab/AddMedia.vue';
+import {shallowRef} from 'vue'
 
 @Options({
   components: {
@@ -89,10 +91,18 @@ import Demo from '@/views/SettingTab/Demo.vue';
         model: ImportFiles,
       },*/
       {
+        key: 'addMedia',
+        title: 'add media',
+        description: 'attach media folder to /media',
+        model: shallowRef(AddMedia),
+        // model: AddMedia,
+      },
+      {
         key: 'demo',
         title: 'a demo',
         description: 'this is a demo',
-        model: Demo,
+        model: shallowRef(Demo),
+        // model: Demo,
       },
     ];
     return {

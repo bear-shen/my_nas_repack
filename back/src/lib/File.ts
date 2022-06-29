@@ -49,7 +49,7 @@ function makeHashPath(hash: string): string {
 
 function makePath(
     pre: 'web' | 'local' | 'rel',
-    fileType: 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle' | 'temp' | string,
+    fileType: FileType | 'temp' | string,
     hash: string,
     suffix: string,
 ): string {
@@ -82,7 +82,7 @@ function getSuffixByName(fileName: string): string {
     return suffix;
 }
 
-function getTypeBySuffix(suffix: string): 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle' {
+function getTypeBySuffix(suffix: string): FileType {
     let fileType;
     for (const type in Config.suffixRef) {
         // console.info(Config.suffixRef[type], suffix, Config.suffixRef[type].indexOf(suffix),);
@@ -97,7 +97,7 @@ function getTypeBySuffix(suffix: string): 'audio' | 'video' | 'image' | 'binary'
 }
 
 async function setFile(
-    fileType: 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle',
+    fileType: FileType,
     fileHash: string,
     suffix: string,
     size: number,

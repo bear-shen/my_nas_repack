@@ -15,10 +15,12 @@
         <span>Type : </span><select v-model="query.type">
         <option>any</option>
         <option>directory</option>
-        <option>video</option>
         <option>audio</option>
+        <option>video</option>
         <option>image</option>
+        <option>binary</option>
         <option>text</option>
+        <option>pdf</option>
         <option>other</option>
       </select>
       </label>

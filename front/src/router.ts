@@ -5,6 +5,7 @@ import Directory from './views/Directory.vue'
 import Setting from './views/Setting.vue'
 import Tag from './views/Tag.vue'
 // import User from '../views/User.vue'
+import Media from './views/Media.vue';
 import Group from './views/Group.vue';
 import Local from '@/views/Local.vue';
 
@@ -28,18 +29,18 @@ const routes: Array<RouteRecordRaw> = [
         meta: {icon: 'sysIcon_star-o',},
       },*/
       {
-        path: '/media',
-        name: 'Media',
-        component: Directory,
-        meta: {icon: 'sysIcon_star-o',},
-      },
-      {
         path: '/recycle',
         name: 'Recycle',
         component: Directory,
         meta: {icon: 'sysIcon_delete',},
       },
     ],
+  },
+  {
+    path: '/media',
+    name: 'Media',
+    component: Media,
+    meta: {icon: 'sysIcon_star-o',},
   },
   {
     path: '/tag',

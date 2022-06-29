@@ -1,3 +1,5 @@
+import {Modal, ModalComponentConstruct} from './lib/ModalLib';
+
 type FileType = 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle' | 'pdf';
 
 interface NodeCol {

@@ -1,6 +1,6 @@
-type FileType = 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle' | 'pdf';
+export type FileType = 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle' | 'pdf';
 
-interface NodeCol {
+export interface NodeCol {
   id?: number,
   id_parent?: number,
   // id_cover?: number,
@@ -37,7 +37,7 @@ interface NodeCol {
   index_node?: { [key: string]: any },
 }
 
-interface FileCol {
+export interface FileCol {
   id?: number,
   hash?: string,
   type?: FileType,
@@ -51,7 +51,7 @@ interface FileCol {
   time_update?: string,
 }
 
-interface UserGroupCol {
+export interface UserGroupCol {
   id?: number,
   title?: string,
   description?: string,
@@ -66,7 +66,7 @@ interface UserGroupCol {
   time_update?: string,
 }
 
-interface UserCol {
+export interface UserCol {
   id?: number,
   name?: string,
   mail?: string,
@@ -77,7 +77,7 @@ interface UserCol {
   time_update?: string,
 }
 
-interface TagGroupCol {
+export interface TagGroupCol {
   id?: number,
   title?: string,
   description?: string,
@@ -88,7 +88,7 @@ interface TagGroupCol {
   time_update?: string,
 }
 
-interface TagCol {
+export interface TagCol {
   id?: number,
   id_group?: number,
   title?: string,
@@ -100,7 +100,7 @@ interface TagCol {
   time_update?: string,
 }
 
-interface AuthCol {
+export interface AuthCol {
   id?: number,
   uid?: number,
   token?: string,
@@ -108,7 +108,7 @@ interface AuthCol {
   time_update?: string,
 }
 
-interface QueueCol {
+export interface QueueCol {
   id?: number,
   type?: string,
   payload?: { [key: string]: any },
@@ -117,7 +117,7 @@ interface QueueCol {
   time_update?: string,
 }
 
-interface SettingCol {
+export interface SettingCol {
   id?: number,
   key?: string,
   value?: { [key: string]: any },

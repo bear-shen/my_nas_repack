@@ -8,6 +8,7 @@ import {
   TagCol,
   AuthCol,
   QueueCol,
+  SettingCol,
 } from './columns';
 
 type TagItem = TagCol;

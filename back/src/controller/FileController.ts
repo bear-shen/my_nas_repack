@@ -13,6 +13,7 @@ import * as Buffer from "buffer";
 import QueueModel from "../model/QueueModel";
 import UserModel from "../model/UserModel";
 import UserGroupModel from "../model/UserGroupModel";
+import {FileCol, NodeCol, TagCol, TagGroupCol} from "../columns";
 
 
 class FileController extends BaseController {

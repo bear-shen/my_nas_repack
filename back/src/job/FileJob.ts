@@ -12,6 +12,7 @@ import * as fsNP from "fs";
 import ORM from "../lib/ORM";
 import nodeModel from "../model/NodeModel";
 import QueueModel from "../model/QueueModel";
+import {NodeCol} from "../columns";
 
 //
 

@@ -1,4 +1,5 @@
 import BaseModel from "./BaseModel";
+import {AuthCol} from "../columns";
 
 
 class AuthModel extends BaseModel<AuthCol> {

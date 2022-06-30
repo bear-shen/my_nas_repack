@@ -5,6 +5,7 @@ import {Buffer} from "buffer";
 import Lib from "../Lib";
 import NodeModel from "../../model/NodeModel";
 import {ReadStream} from "fs";
+import {NodeCol, FileCol} from "../../columns";
 
 async function process(req: IncomingMessage, bodyPath: string, res: ServerResponse) {
     // console.info('proc here, req:', body);

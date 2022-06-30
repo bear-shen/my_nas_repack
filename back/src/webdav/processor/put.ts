@@ -10,8 +10,9 @@ import Config from "../../Config";
 import QueueModel from "../../model/QueueModel";
 import {Buffer} from "buffer";
 import {ReadStream} from "fs";
+import {NodeCol, FileCol} from "../../columns";
 
-async function process(req: IncomingMessage,bodyPath: string, res: ServerResponse) {
+async function process(req: IncomingMessage, bodyPath: string, res: ServerResponse) {
     const dirOffset = req.url.replace(/\/$/ig, '').lastIndexOf('/');
     const dirPath = req.url.substring(0, dirOffset);
     const fileName = decodeURIComponent(req.url.substring(dirOffset + 1));
@@ -66,7 +67,7 @@ async function process(req: IncomingMessage,bodyPath: string, res: ServerRespons
         await (new NodeModel).where('id', ifNode.id).update({status: 1});
     }
     //
-    let ifFile = false as NodeCol | boolean;
+    let ifFile = null as NodeCol;
     if (ifNode.index_file_id.raw) {
         ifFile = await (new FileModel).where('id', ifNode.index_file_id.raw).first();
     }

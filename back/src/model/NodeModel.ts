@@ -1,4 +1,5 @@
 import BaseModel from "./BaseModel";
+import {NodeCol} from "../columns";
 
 class NodeModel extends BaseModel<NodeCol> {
     public table = 'node';

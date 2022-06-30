@@ -1,5 +1,6 @@
 import BaseModel from "./BaseModel";
 import NodeModel from "./NodeModel";
+import {TagCol} from "../columns";
 
 class TagModel extends BaseModel<TagCol> {
     public table = 'tag';

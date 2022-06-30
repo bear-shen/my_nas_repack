@@ -7,6 +7,7 @@ import Lib from "../Lib";
 
 const convert = require('xml-js');
 import {ReadStream} from "fs";
+import {NodeCol, FileCol} from "../../columns";
 
 /**
  * header

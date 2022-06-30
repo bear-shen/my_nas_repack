@@ -10,6 +10,7 @@ import QueueModel from "../model/QueueModel";
 import {Stats} from "node:fs";
 import Util from "./Util";
 import {ExecException} from "child_process";
+import {FileCol, FileType, NodeCol} from "../columns";
 
 const util = require('util');
 const crypt = require('crypto');

@@ -7,6 +7,7 @@ import NodeModel from "../../model/NodeModel";
 import QueueModel from "../../model/QueueModel";
 import FileLib from "../../lib/File";
 import {ReadStream} from "fs";
+import {NodeCol, FileCol} from "../../columns";
 
 async function process(req: IncomingMessage, bodyPath: string, res: ServerResponse) {
     const url = new URL(req.url, `http://${req.headers.host}`);

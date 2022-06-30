@@ -1,4 +1,5 @@
 import BaseModel from "./BaseModel";
+import {QueueCol} from "../columns";
 
 
 class QueueModel extends BaseModel<QueueCol> {

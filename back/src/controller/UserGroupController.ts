@@ -5,6 +5,7 @@ import UserModel from "../model/UserModel";
 import AuthModel from "../model/AuthModel";
 import UserGroupModel from "../model/UserGroupModel";
 import NodeModel from "../model/NodeModel";
+import {NodeCol, UserGroupCol} from "../columns";
 
 class UserGroupController extends BaseController {
 

@@ -4,6 +4,7 @@ import QueueModel from "../model/QueueModel";
 import TagModel from "../model/TagModel";
 import TagGroupModel from "../model/TagGroupModel";
 import NodeModel from "../model/NodeModel";
+import {NodeCol, TagCol, TagGroupCol} from "../columns";
 
 class TagController extends BaseController {
     async mod(data: { fields: Fields, files: Array<typeof PersistentFile>, uid: number }): Promise<any> {

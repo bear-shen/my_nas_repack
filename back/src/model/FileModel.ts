@@ -1,5 +1,6 @@
 import BaseModel from "./BaseModel";
 import NodeModel from "./NodeModel";
+import {FileCol} from "../columns";
 
 class FileModel extends BaseModel<FileCol> {
     public table = 'file';

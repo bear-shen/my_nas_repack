@@ -1,4 +1,5 @@
 import BaseModel from "./BaseModel";
+import {SettingCol} from "../columns";
 
 class SettingModel extends BaseModel<SettingCol> {
     public table = 'settings';

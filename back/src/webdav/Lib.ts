@@ -4,6 +4,7 @@ import config from "../Config";
 import {ElementCompact} from "xml-js";
 import ErrorCode from "./ErrorCode";
 import QueueModel from "../model/QueueModel";
+import {NodeCol, FileCol} from "../columns";
 
 async function getCurNode(url: URL): Promise<NodeCol | boolean> {
     const rootPos = url.pathname.indexOf(config.webDavRoot);

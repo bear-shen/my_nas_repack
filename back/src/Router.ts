@@ -10,6 +10,7 @@ import TagController from "./controller/TagController";
 import TagGroupController from "./controller/TagGroupController";
 import UserGroupController from "./controller/UserGroupController";
 import LocalController from "./controller/LocalController";
+import ConfigController from "./controller/ConfigController";
 
 const controllers = {
     file: FileController,
@@ -18,6 +19,7 @@ const controllers = {
     tag_group: TagGroupController,
     user_group: UserGroupController,
     local: LocalController,
+    config: ConfigController,
     //
     dev: DevController,
 }

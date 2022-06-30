@@ -116,3 +116,11 @@ interface QueueCol {
     time_create?: string,
     time_update?: string,
 }
+
+interface SettingCol {
+    id?: number,
+    key?: string,
+    value?: { [key: string]: any },
+    time_create?: string,
+    time_update?: string,
+}

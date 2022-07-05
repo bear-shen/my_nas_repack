@@ -121,9 +121,16 @@ import {FileType} from '@/columns';
   },
   watch: {},
   mounted: function () {
-    return '';
+    this.fetch();
   },
   methods: {
+    fetch: async function () {
+      const res = await this.$query('config/get', {
+        name: 'media_folder',
+      });
+      if (res === false) return;
+      console.info(res);
+    },
     searchDir: function () {
       const mvModal = {
         title: `import [${this.imp.from}] to :`,
@@ -160,6 +167,12 @@ import {FileType} from '@/columns';
     },
     saveItem: async function (index: number) {
       const item = this.list[index];
+      const res = await this.$query('config/get', {
+        name: 'media_folder',
+        value: this.list,
+      });
+      if (res === false) return;
+      console.info(res);
       item.edit = false;
     },
     deleteItem: async function (index: number) {

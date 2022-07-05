@@ -119,7 +119,7 @@ export interface QueueCol {
 
 export interface SettingCol {
   id?: number,
-  key?: string,
+  name?: string,
   value?: { [key: string]: any },
   time_create?: string,
   time_update?: string,

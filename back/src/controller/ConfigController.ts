@@ -13,9 +13,9 @@ class ConfigController extends BaseController {
         req: IncomingMessage, res: ServerResponse
     ): Promise<any> {
         const fields = Object.assign({
-            key: '',
+            name: '',
         }, data.fields);
-        const item = await (new SettingModel).where('key', fields.key).first();
+        const item = await (new SettingModel).where('name', fields.name).first();
         if (!item) throw new Error('config not found');
         return item;
     }
@@ -25,15 +25,15 @@ class ConfigController extends BaseController {
         req: IncomingMessage, res: ServerResponse
     ): Promise<any> {
         const fields = Object.assign({
-            key: '',
+            name: '',
             value: '',
         }, data.fields);
-        const item = await (new SettingModel).where('key', fields.key).first();
+        const item = await (new SettingModel).where('name', fields.name).first();
         if (item) {
-            await (new SettingModel).where('key', fields.key).update({value: fields.value});
+            await (new SettingModel).where('name', fields.name).update({value: fields.value});
         } else {
             await (new SettingModel).insert({
-                key: fields.key,
+                name: fields.name,
                 value: fields.value,
             });
         }

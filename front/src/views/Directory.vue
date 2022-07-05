@@ -122,7 +122,7 @@
       line-height: $lineHeight;
       height: $lineHeight;
       //padding: 0;
-      vertical-align: top;
+      //vertical-align: top;
       font-size: $fontSize;
       padding: 0 $fontSize*0.5;
       max-width: $fontSize*7.5;
@@ -142,7 +142,7 @@
       height: $lineHeight;
       padding: 0 $fontSize*0.5;
       line-height: $lineHeight;
-      vertical-align: top;
+      //vertical-align: top;
     }
     input[type='checkbox'] + label::before {
       font-family: "sysIcon";

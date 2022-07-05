@@ -56,7 +56,7 @@
     }
     button {
       padding: 0 $fontSize;
-      vertical-align: top;
+      //vertical-align: top;
     }
     .title {
       min-width: 70%;

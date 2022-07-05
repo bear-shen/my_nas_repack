@@ -13,9 +13,9 @@
         <div class="description" v-html="item.description"></div>
       </div>
     </div>
-    <div
-      class="setting_content"
-    ></div>
+    <div class="setting_content">
+
+    </div>
   </div>
 </template>
 

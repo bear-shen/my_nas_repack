@@ -157,7 +157,7 @@
   }
   input {
     padding: 0 $fontSize*0.5;
-    vertical-align: top;
+    //vertical-align: top;
   }
   .avail {
     background-color: map-get($colors, positive);

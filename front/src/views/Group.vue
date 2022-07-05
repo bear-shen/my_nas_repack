@@ -290,8 +290,8 @@ import {NodeItem} from '@/struct';
     },
     dir_hinter_process: function (item: NodeItem) {
       return `${
-        (item.tree?.title as Array<string>).join(' \\ ')
-      } \\ ${
+        (item.tree?.title as Array<string>).join(' / ')
+      } / ${
         item.title
       }`;
     },

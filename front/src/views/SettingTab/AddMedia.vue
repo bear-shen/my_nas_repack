@@ -1,5 +1,5 @@
 <template>
-  <div class="setting_item">
+  <div class="setting_item setting_add_media">
     <div v-for="(item,index) in list" :key="`set_add_media_${index}`">
       <template v-if="item.edit">
         <hinter
@@ -19,6 +19,7 @@
           <option>binary</option>
           <option>text</option>
           <option>pdf</option>
+          <option>any</option>
         </select>
         <div class="operate">
           <button @click="saveItem(index)">save</button>
@@ -40,8 +41,8 @@
   </div>
 </template>
 
-<style scoped lang="scss">
-.setting_item {
+<style lang="scss">
+.setting_add_media {
   height: auto;
   > div {
     height: $fontSize*2;
@@ -60,11 +61,16 @@
     .title {
       min-width: 70%;
     }
-    .type {}
+    .type {
+      padding: 0 $fontSize/2;
+    }
     .operate {}
   }
   > div:nth-child(2n-1) {
     background-color: map-get($colors, list_l2_bk);
+  }
+  .hinter input {
+    padding: 0 $fontSize/2;
   }
 }
 </style>
@@ -88,29 +94,8 @@ import {FileType} from '@/columns';
   },
   data: function () {
     return {
-      list: [
-        {
-          id: 1,
-          title: 'audio',
-          tree: {
-            id: [0, 1, 2, 3, 4,],
-            title: ['root', 'path1', 'path2', 'path3', 'path4',],
-          },
-          target_type: 'audio',
-          edit: false
-        },
-        {
-          id: 2,
-          title: 'video',
-          tree: {
-            id: [0, 1, 2, 3, 4,],
-            title: ['root', 'path1', 'path2', 'path3', 'path4',],
-          },
-          target_type: 'video',
-          edit: false,
-        },
-      ] as Array<NodeItem & {
-        target_type: FileType | null,
+      list: [] as Array<NodeItem & {
+        target_type: FileType | 'any',
         edit: boolean,
       }>,
     };
@@ -130,6 +115,7 @@ import {FileType} from '@/columns';
       });
       if (res === false) return;
       console.info(res);
+      this.list = res.value;
     },
     searchDir: function () {
       const mvModal = {
@@ -167,13 +153,13 @@ import {FileType} from '@/columns';
     },
     saveItem: async function (index: number) {
       const item = this.list[index];
-      const res = await this.$query('config/get', {
+      item.edit = false;
+      const res = await this.$query('config/set', {
         name: 'media_folder',
-        value: this.list,
+        value: JSON.stringify(this.list),
       });
       if (res === false) return;
       console.info(res);
-      item.edit = false;
     },
     deleteItem: async function (index: number) {
       const item = this.list[index];
@@ -202,8 +188,8 @@ import {FileType} from '@/columns';
     },
     dir_hinter_process: function (item: NodeItem) {
       return `${
-        (item.tree?.title as Array<string>).join(' \\ ')
-      } \\ ${
+        (item.tree?.title as Array<string>).join(' / ')
+      } / ${
         item.title
       }`;
     },

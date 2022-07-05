@@ -3,16 +3,19 @@
     <!--    -->
     <div class="setting_nav">
       <div
-        v-for="(item,index) in list" :key="`setting_nav_${index}`" @click="go(index)"
-        :class="{active:item.key===cur.key}"
+        v-for="(item,index) in dirList" :key="`setting_nav_${index}`"
+        @click="go(index)"
+        :class="{
+          active:item.id===curDir.id&&item.target_type===curDir.target_type
+        }"
       >
         <div class="title" v-html="item.title"></div>
         <div class="description" v-html="item.description"></div>
       </div>
     </div>
-    <component
-      class="setting_content" :is="cur.model" :markRaw="true"
-    ></component>
+    <div
+      class="setting_content"
+    ></div>
   </div>
 </template>
 
@@ -77,37 +80,18 @@ import {ModalCreatorConfig} from '@/lib/ModalLib';
 import Demo from '@/views/SettingTab/Demo.vue';
 import AddMedia from '@/views/SettingTab/AddMedia.vue';
 import {shallowRef} from 'vue'
+import {FileType} from '@/columns';
 
 @Options({
   components: {
     ContentEditable,
   },
   data: function () {
-    const list = [
-      /*{
-        key: 'import_files',
-        title: 'import files',
-        description: 'import files from local dir',
-        model: ImportFiles,
-      },*/
-      {
-        key: 'demo',
-        title: 'a demo',
-        description: 'this is a demo',
-        model: shallowRef(Demo),
-        // model: Demo,
-      },
-      {
-        key: 'addMedia',
-        title: 'add media',
-        description: 'attach media folder to /media',
-        model: shallowRef(AddMedia),
-        // model: AddMedia,
-      },
-    ];
     return {
-      list: list,
-      cur: list[0],
+      dirList: [] as Array<NodeItem & {
+        target_type: FileType | 'any',
+      }>,
+      curDir: {},
     };
   },
   created: function () {
@@ -115,11 +99,18 @@ import {shallowRef} from 'vue'
   },
   watch: {},
   mounted: function () {
-    return '';
+    this.fetchNodeList();
   },
   methods: {
+    fetchNodeList: async function () {
+      const res = await this.$query('config/get', {
+        name: 'media_folder',
+      });
+      if (res === false) return;
+      this.dirList = res.value;
+    },
     go: function (index: number): any {
-      this.cur = this.list[index];
+      this.curDir = this.dirList[index];
       // return index;
     },
   },

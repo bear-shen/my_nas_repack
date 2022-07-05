@@ -28,6 +28,9 @@ class ConfigController extends BaseController {
             name: '',
             value: '',
         }, data.fields);
+        fields.value = JSON.parse(fields.value);
+        if (!fields.value) throw new Error('invalid value');
+
         const item = await (new SettingModel).where('name', fields.name).first();
         if (item) {
             await (new SettingModel).where('name', fields.name).update({value: fields.value});

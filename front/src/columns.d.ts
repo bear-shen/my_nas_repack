@@ -1,4 +1,7 @@
-export type FileType = 'audio' | 'video' | 'image' | 'binary' | 'text' | 'subtitle' | 'pdf';
+export type FileType = 'audio' | 'video' |
+  'image' | 'binary' |
+  'text' | 'subtitle' |
+  'pdf';
 
 export interface NodeCol {
   id?: number,
@@ -123,4 +126,22 @@ export interface SettingCol {
   value?: { [key: string]: any },
   time_create?: string,
   time_update?: string,
+}
+
+// 'index' |
+export type nodeDetailFlags = 'tree' | 'tag' | 'file';
+
+export interface nodeListFields {
+  id?: number | string
+  title?: string
+  type: FileType | 'directory' | 'any'
+  sort: 'id_asc' | 'id_desc' |
+    'name_asc' | 'name_desc' |
+    'crt_asc' | 'crt_desc' |
+    'upd_asc' | 'upd_desc'
+  tag: number
+  page: number
+  total: number
+  filter: 'recycle' | 'normal' | 'favourite'
+  flag: Array<nodeDetailFlags>
 }

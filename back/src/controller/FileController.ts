@@ -13,7 +13,7 @@ import * as Buffer from "buffer";
 import QueueModel from "../model/QueueModel";
 import UserModel from "../model/UserModel";
 import UserGroupModel from "../model/UserGroupModel";
-import {FileCol, NodeCol, TagCol, TagGroupCol} from "../columns";
+import {FileCol, FileType, NodeCol, nodeDetailFlags, nodeListFields, TagCol, TagGroupCol} from "../columns";
 
 
 class FileController extends BaseController {
@@ -244,31 +244,49 @@ class FileController extends BaseController {
             tag: null,
             page: null,
             total: null,
-            level: null,
-            recycle: null,
-            favourite: null,//@todo
-        }, data.fields);
-        let isDirectory = !(fields.favourite || fields.recycle);
-        let page = parseInt(fields.page as string);
+            filter: 'normal',
+            flag: null,
+        }, data.fields) as nodeListFields;
+        //
+        if (fields.flag) {
+            fields.flag = (fields.flag as unknown as string).split('.') as nodeDetailFlags[];
+        } else {
+            fields.flag = [];
+        }
+        //
+        let isDirectory = fields.filter === 'normal';
+        let page = parseInt(fields.page as any);
         page = (page && page > 1) ? page : 1;
         //
-        const parentId = parseInt(fields.id as string);
         const model = (new NodeModel())
             // .where('status', fields.recycle ? '=' : '<>', 0);
-            .where('status', fields.recycle ? 0 : 1);
-        if (parentId || parentId === 0)
+            .where('status', fields.filter === 'recycle' ? 0 : 1);
+        //
+        const parentId = parseInt(fields.id as string);
+        if (parentId === 0) {
+            model.where('id_parent', 0);
+        } else if (parentId)
             model.where('id_parent', parentId ? parentId : 0);
         else if (
-            !(parentId || fields.title || fields.tag)
+            //不太确定是啥情况下的判断了
+            !(fields.title || fields.tag)
             && isDirectory
         )
             model.where('id_parent', 0);
+        //
+        if (fields.title) {
+            let tt = fields.title as string;
+            tt = `${tt.trim()}*`.replace(' ', '* ');
+            model
+                .whereRaw('match (`index_node`) against ( ? in boolean mode)', tt)
+                //索引不要做布尔模式，排序好看一点，以及注意因为这里涉及到绑定顺序，所以应该写在所有可能的数据绑定后
+                .order('match (`index_node`) against ( ? )', 'desc');
+            model._dataset.binds.push(tt);
+        }
+        //
         if (fields.type) {
             let fType;
             switch (fields.type) {
-                case 'other':
-                    fType = 'binary';
-                    break;
                 case 'any':
                     break;
                 default:
@@ -277,7 +295,39 @@ class FileController extends BaseController {
             }
             if (fType) model.where('type', fType);
         }
-        if (fields.tag) model.whereRaw('find_in_set( ? , list_tag_id)', ...fields.tag);
+        //
+        switch (fields.sort) {
+            default:
+            case 'id_asc':
+                model.order('id', 'asc');
+                break;
+            case 'id_desc':
+                model.order('id', 'desc');
+                break;
+            case 'name_asc':
+                model.order('title', 'asc');
+                break;
+            case 'name_desc':
+                model.order('title', 'desc');
+                break;
+            case 'crt_asc':
+                model.order('time_create', 'asc');
+                break;
+            case 'crt_desc':
+                model.order('time_create', 'desc');
+                break;
+            case 'upd_asc':
+                model.order('time_update', 'asc');
+                break;
+            case 'upd_desc':
+                model.order('time_update', 'desc');
+                break;
+        }
+        //
+        if (fields.tag)
+            model.whereRaw(
+                'find_in_set( ? , list_tag_id)', fields.tag
+            );
         if (!fields.total) {
             model.page(page);
         }
@@ -316,42 +366,6 @@ class FileController extends BaseController {
             // }
         }
         //
-        if (fields.title) {
-            let tt = fields.title as string;
-            tt = `${tt.trim()}*`.replace(' ', '* ');
-            model
-                .whereRaw('match (`index_node`) against ( ? in boolean mode)', tt)
-                //索引不要做布尔模式，排序好看一点，以及注意因为这里涉及到绑定顺序，所以应该写在所有可能的数据绑定后
-                .order('match (`index_node`) against ( ? )', 'desc');
-            model._dataset.binds.push(tt);
-        }
-        switch (fields.sort) {
-            default:
-            case 'id_asc':
-                model.order('id', 'asc');
-                break;
-            case 'id_desc':
-                model.order('id', 'desc');
-                break;
-            case 'name_asc':
-                model.order('title', 'asc');
-                break;
-            case 'name_desc':
-                model.order('title', 'desc');
-                break;
-            case 'crt_asc':
-                model.order('time_create', 'asc');
-                break;
-            case 'crt_desc':
-                model.order('time_create', 'desc');
-                break;
-            case 'upd_asc':
-                model.order('time_update', 'asc');
-                break;
-            case 'upd_desc':
-                model.order('time_update', 'desc');
-                break;
-        }
         const list = await model.select();
         const size = await model.count();
         //
@@ -361,7 +375,7 @@ class FileController extends BaseController {
                 parent = await (new NodeModel).where('id', parentId).first();
             }
             if (parent) {
-                const parentPArr = await nodeProcessor([parent], 'tree');
+                const parentPArr = await nodeProcessor([parent], ['tree']);
                 parent = parentPArr[0];
             } else {
                 parent = {
@@ -382,7 +396,11 @@ class FileController extends BaseController {
         return {
             cur_dir: parent ? parent : null,
             list: await nodeProcessor(
-                list, (fields.level ? fields.level as any : 'full')
+                list, (
+                    fields.flag ?
+                        fields.flag as any :
+                        ['tree', 'tag', 'file']
+                )
             ),
             page: page,
             size: Math.ceil(size / 100),
@@ -485,7 +503,10 @@ interface NodeProcessorExp extends NodeCol {
 //full:  nodeTree file tag
 //tree:  nodeTree file
 //index: nodeTree
-async function nodeProcessor(nodeList: NodeCol[], level: 'full' | 'tree' | 'index' = 'full'): Promise<NodeProcessorExp[]> {
+async function nodeProcessor(
+    nodeList: NodeCol[],
+    flag: Array<nodeDetailFlags> = ['file', 'tree', 'tag',]
+): Promise<NodeProcessorExp[]> {
     const nList = nodeList as NodeProcessorExp[];
     //
     const fileIdArr = [] as number[];
@@ -508,7 +529,7 @@ async function nodeProcessor(nodeList: NodeCol[], level: 'full' | 'tree' | 'inde
     tagIdArr = Array.from(new Set<number>(tagIdArr));
     // console.info(tagIdArr);
     //cover|file
-    if ((['full', 'tree'].indexOf(level) !== -1) && fileIdArr.length) {
+    if ((flag.indexOf('file') !== -1) && fileIdArr.length) {
         let fileArr = await (new FileModel).whereIn('id', fileIdArr).select();
         const fileMap = new Map<number, FileCol>();
         for (let i = 0; i < fileArr.length; i++) {
@@ -538,7 +559,7 @@ async function nodeProcessor(nodeList: NodeCol[], level: 'full' | 'tree' | 'inde
         }
     }
     //tree
-    if ((['full', 'tree', 'index'].indexOf(level) !== -1) && treeNodeIdArr.length) {
+    if ((flag.indexOf('tree') !== -1) && treeNodeIdArr.length) {
         const nodeArr = await (new NodeModel).whereIn('id', treeNodeIdArr).select(['id', 'title',]);
         const nodeMap = new Map<number, NodeCol>();
         for (let i = 0; i < nodeArr.length; i++) {
@@ -561,7 +582,7 @@ async function nodeProcessor(nodeList: NodeCol[], level: 'full' | 'tree' | 'inde
         }
     }
     //tag
-    if ((['full'].indexOf(level) !== -1) && tagIdArr.length) {
+    if ((flag.indexOf('tag') !== -1) && tagIdArr.length) {
         const tagArr = await (new TagModel).whereIn('id', tagIdArr).select(['id', 'id_group', 'title',]);
         const tagMap = new Map<number, TagCol>();
         let tagGroupIdArr = [] as number[];

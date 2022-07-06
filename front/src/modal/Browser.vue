@@ -197,6 +197,7 @@ import VideoBrowser from './browser/Video.vue';
 import AudioBrowser from './browser/Audio.vue';
 import PdfBrowser from './browser/Pdf.vue';
 import BrowserBase from '@/modal/browser/Base.vue';
+import {nodeListFields} from '@/columns';
 
 @Options({
   emits: ['close'],
@@ -266,9 +267,10 @@ import BrowserBase from '@/modal/browser/Base.vue';
   },
   methods: {
     fetch: async function () {
-      const query = JSON.parse(JSON.stringify((this.modalMeta as ModalMeta).data.query));
+      const query = JSON.parse(JSON.stringify((this.modalMeta as ModalMeta).data.query)) as nodeListFields;
       console.debug('FileBrowser:Base:fetch', query);
       query.total = 1;
+      query.flag = ['file'];
       const queryRes = await this.$query('file/list', query);
       if (queryRes === false) return;
       this.list = queryRes.list;

@@ -113,6 +113,7 @@ import {nodeListFields} from '@/columns';
       const queryExt = {} as nodeListFields;
       if (this.type === 'recycle') queryExt.filter = 'recycle';
       else if (this.type === 'favourite') queryExt.filter = 'favourite';
+      queryExt.flag = ['tag', 'file'];
       const queryRes = await this.$query('file/list', Object.assign(queryExt, this.query));
       if (queryRes === false) return;
       this.list = queryRes.list;

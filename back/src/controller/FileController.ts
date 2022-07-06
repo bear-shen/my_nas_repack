@@ -249,7 +249,7 @@ class FileController extends BaseController {
         }, data.fields) as nodeListFields;
         //
         if (fields.flag) {
-            fields.flag = (fields.flag as unknown as string).split('.') as nodeDetailFlags[];
+            fields.flag = (fields.flag as unknown as string).split(',') as nodeDetailFlags[];
         } else {
             fields.flag = [];
         }
@@ -522,12 +522,13 @@ async function nodeProcessor(
         }
         if (nList[i].list_node) treeNodeIdArr.push(...nList[i].list_node);
         if (nList[i].list_tag_id) tagIdArr.push(...nList[i].list_tag_id);
-        nList[i].is_file = false;
+        nList[i].is_file = nList[i].type === 'directory';
     }
     treeNodeIdArr = Array.from(new Set<number>(treeNodeIdArr));
     // console.info(tagIdArr);
     tagIdArr = Array.from(new Set<number>(tagIdArr));
     // console.info(tagIdArr);
+    // console.info(flag);
     //cover|file
     if ((flag.indexOf('file') !== -1) && fileIdArr.length) {
         let fileArr = await (new FileModel).whereIn('id', fileIdArr).select();

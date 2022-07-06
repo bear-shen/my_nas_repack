@@ -319,7 +319,7 @@ import {nodeListFields} from '@/columns';
     goDetail: function (item: NodeItem) {
       //注意：导航条上转入的时候只有文件id
       if (!item.is_file) {
-        const query = {} as { [key: string]: any };
+        const query = {} as nodeListFields;
         // const query = this.$util.copy(this.query);
         query.id = item.id;
         // console.debug(this.$route.path, query);

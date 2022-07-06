@@ -149,7 +149,7 @@ import {nodeListFields} from '@/columns';
     goDetail: function (item: NodeItem) {
       //注意：导航条上转入的时候只有文件id
       if (!item.is_file) {
-        const query = {} as { [key: string]: any };
+        const query = {} as nodeListFields;
         // const query = this.$util.copy(this.query);
         query.id = item.id;
         // console.debug(this.$route.path, query);
@@ -157,9 +157,9 @@ import {nodeListFields} from '@/columns';
         return;
       }
       console.info('call detail', this.$route.query)
-      const queryExt = this.$util.copy(this.$route.query) as { [key: string]: any };
-      if (this.type === 'recycle') queryExt.recycle = 1;
-      if (this.type === 'favourite') queryExt.favourite = 1;
+      const queryExt = this.$util.copy(this.$route.query) as nodeListFields;
+      if (this.type === 'recycle') queryExt.filter = 'recycle';
+      else if (this.type === 'favourite') queryExt.filter = 'favourite';
       const openFileModal = {
         title: 'file detail',
         key: 'file_detail',

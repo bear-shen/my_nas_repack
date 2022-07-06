@@ -1,9 +1,9 @@
 <template>
-  <div class="content_body content_setting">
+  <div class="content_body content_media">
     <!--    -->
-    <div class="setting_nav">
+    <div class="media_nav">
       <div
-        v-for="(item,index) in dirList" :key="`setting_nav_${index}`"
+        v-for="(item,index) in dirList" :key="`media_nav_${index}`"
         @click="go(index)"
         :class="{
           active:item.id===curDir.id&&item.target_type===curDir.target_type
@@ -13,26 +13,28 @@
         <div class="description" v-html="item.description"></div>
       </div>
     </div>
-    <div class="setting_content">
-
-    </div>
+    <directory-layout
+      :mode="'img'"
+      :type="'directory'"
+      :query="query"
+      class="media_content"></directory-layout>
   </div>
 </template>
 
 <style lang="scss" scoped>
 #frame_content {
-  div.content_setting {
+  div.content_media {
     margin-bottom: 0;
   }
 }
-.content_setting {
+.content_media {
   padding-bottom: 0;
   height: 100%;
   position: relative;
   display: flex;
   justify-content: left;
   flex-direction: row;
-  .setting_nav {
+  .media_nav {
     height: 100%;
     width: $fontSize*10;
     background-color: map-get($colors, nav_2_bk);
@@ -55,7 +57,7 @@
       background-color: map-get($colors, nav_2_active);
     }
   }
-  .setting_content {
+  .media_content {
     //float: left;
     //这边用了flex所以不用严格限定宽度
     //width: calc(100% - #{$fontSize});
@@ -80,18 +82,27 @@ import {ModalCreatorConfig} from '@/lib/ModalLib';
 import Demo from '@/views/SettingTab/Demo.vue';
 import AddMedia from '@/views/SettingTab/AddMedia.vue';
 import {shallowRef} from 'vue'
-import {FileType} from '@/columns';
+import {FileType, nodeListFields} from '@/columns';
+import DirectoryLayout from '@/components/DirectoryLayout.vue';
 
 @Options({
   components: {
+    DirectoryLayout,
     ContentEditable,
   },
   data: function () {
     return {
-      dirList: [] as Array<NodeItem & {
-        target_type: FileType | 'any',
-      }>,
-      curDir: {},
+      type: 'directory',
+      mode: '',
+      query: {
+        id: 0,
+        title: '',
+        type: 'any',
+        sort: 'id_asc',
+        tag: 0,
+        cascade: 1,
+        // is_file: false,
+      } as nodeListFields,
     };
   },
   created: function () {

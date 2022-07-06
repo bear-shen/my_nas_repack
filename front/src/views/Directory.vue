@@ -15,6 +15,7 @@
         <span>Type : </span><select v-model="query.type">
         <option>any</option>
         <option>directory</option>
+        <option>file</option>
         <option>audio</option>
         <option>video</option>
         <option>image</option>

@@ -246,7 +246,8 @@ class FileController extends BaseController {
             total: null,
             filter: 'normal',
             flag: null,
-        }, data.fields) as nodeListFields;
+            cascade: null,
+        } as nodeListFields, data.fields) as nodeListFields;
         //
         if (fields.flag) {
             fields.flag = (fields.flag as unknown as string).split(',') as nodeDetailFlags[];
@@ -257,16 +258,23 @@ class FileController extends BaseController {
         let isDirectory = fields.filter === 'normal';
         let page = parseInt(fields.page as any);
         page = (page && page > 1) ? page : 1;
+        fields.cascade = parseInt(fields.cascade as any);
         //
         const model = (new NodeModel())
             // .where('status', fields.recycle ? '=' : '<>', 0);
             .where('status', fields.filter === 'recycle' ? 0 : 1);
         //
         const parentId = parseInt(fields.id as string);
-        if (parentId === 0) {
+        if (fields.cascade) {
+            if (parentId) {
+                model.whereRaw(
+                    'find_in_set( ? , list_node)', parentId
+                );
+            }
+        } else if (parentId === 0) {
             model.where('id_parent', 0);
         } else if (parentId)
-            model.where('id_parent', parentId ? parentId : 0);
+            model.where('id_parent', parentId);
         else if (
             //不太确定是啥情况下的判断了
             !(fields.title || fields.tag)
@@ -288,6 +296,12 @@ class FileController extends BaseController {
             let fType;
             switch (fields.type) {
                 case 'any':
+                    break;
+                case 'directory':
+                    model.where('type', 'directory');
+                    break;
+                case 'file':
+                    model.where('type', '<>', 'directory');
                     break;
                 default:
                     fType = fields.type;
@@ -322,6 +336,12 @@ class FileController extends BaseController {
             case 'upd_desc':
                 model.order('time_update', 'desc');
                 break;
+        }
+        if (fields.cascade) {
+            model
+                .order('list_node')
+                .order('title')
+            ;
         }
         //
         if (fields.tag)

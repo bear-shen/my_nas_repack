@@ -66,34 +66,38 @@ import DirectoryItem from '@/components/DirectoryItem.vue';
 import fileListDemo from '@/demo/getFileList';
 import {ModalCreatorConfig} from '@/lib/ModalLib';
 import {NodeItem} from '@/struct';
+import {nodeListFields} from '@/columns';
 
 @Options({
   components: {
     DirectoryItem
   },
+  emits: ['set-current',],
   props: {
     mode: String,
     type: String,
-    query: Object,
+    query: Object as unknown as nodeListFields,
   },
   data: function () {
     return {
       cur_dir: {} as NodeItem,
       list: [] as Array<NodeItem>,
+      page_size: 0,
     };
   },
   created: function () {
     return '';
   },
   watch: {
-    $route: function (to, from) {
-      this.query = this.$util.copy(to.query);
-      //
+    query: function (to, from) {
       this.fetch();
-    }
+    },
+    // $route: function (to, from) {
+    //   this.fetch();
+    // },
   },
   mounted: function () {
-    return '';
+    this.fetch();
   },
   methods: {
     fetch: async function () {
@@ -106,14 +110,16 @@ import {NodeItem} from '@/struct';
           title: 'root',
         },
       ];*/
-      const queryExt = {} as { [key: string]: any };
-      if (this.type === 'recycle') queryExt.recycle = 1;
-      if (this.type === 'favourite') queryExt.favourite = 1;
+      const queryExt = {} as nodeListFields;
+      if (this.type === 'recycle') queryExt.filter = 'recycle';
+      else if (this.type === 'favourite') queryExt.filter = 'favourite';
       const queryRes = await this.$query('file/list', Object.assign(queryExt, this.query));
       if (queryRes === false) return;
       this.list = queryRes.list;
       // this.list = fileListDemo;
-      this.cur_dir = queryRes.cur_dir;
+
+      this.$emit('set-current', queryRes.cur_dir);
+      // this.cur_dir = queryRes.cur_dir;
       this.page_size = queryRes.size;
 
       this.$store.commit(
@@ -122,82 +128,6 @@ import {NodeItem} from '@/struct';
           count: this.page_size,
           current: this.$route.query.page ? this.$route.query.page * 1 : 1
         });
-    },
-    search: function () {
-      const query = this.$util.copy(this.query);
-      this.$router.push({
-        query: query,
-        path: this.$route.path,
-      });
-    },
-    addFile: function () {
-      //todo
-      const addFileModal = {
-        title: `upload to: ${this.cur_dir.title}`,
-        key: 'directory_upload_file',
-        alpha: false,
-        single: true,
-        //不可移动的不能调整大小
-        movable: true,
-        resizable: true,
-        width: 320,
-        height: 180,
-        // text: 'this is content',
-        component: {
-          Uploader: {
-            item: this.cur_dir,
-            callback: () => {
-              console.debug('call');
-            },
-          },
-        },
-        /*callback: () => {
-          console.debug('call close');
-          return '';
-        },*/
-      } as ModalCreatorConfig;
-      this.$store.commit('modal/push', addFileModal);
-    },
-    addFolder: function () {
-      //todo
-      const addFolderModal = {
-        title: `add folder to: ${this.cur_dir.title}`,
-        key: 'add_folder',
-        alpha: false,
-        single: true,
-        //不可移动的不能调整大小
-        movable: true,
-        resizable: true,
-        width: 320,
-        height: 180,
-        // text: 'this is content',
-        form: [
-          {name: 'title', type: 'text',},
-          {name: 'description', type: 'textarea',},
-        ],
-        callback: [
-          {
-            key: 'create',
-            name: 'create',
-            callback: async (form, key, on) => {
-              console.info(form, key, on);
-              const queryRes = await this.$query('file/add_folder', {
-                parent_id: this.cur_dir.id,
-                title: (form as any)[0].value,
-                description: (form as any)[1].value,
-              });
-              if (queryRes === false) return;
-              (on as any).close();
-            },
-          },
-          {
-            key: 'close',
-            name: 'close',
-            callback: (form, key, on) => (on as any).close(),
-          },
-        ],
-      } as ModalCreatorConfig;
-      this.$store.commit('modal/push', addFolderModal);
     },
     go: function (type: string, meta: any) {
       console.debug(arguments,);
@@ -260,34 +190,6 @@ import {NodeItem} from '@/struct';
       if (this.list[index]) {
         this.list.splice(index, 1);
       }
-    },
-    // ------------------------------------------------
-    getType: function (path: string) {
-      // console.debug(to);
-      let curType: string | boolean = false;
-      switch (path) {
-        case '/':
-          curType = 'directory';
-          break;
-        case '/favourite':
-          curType = 'favourite';
-          break;
-        case '/share':
-          curType = 'share';
-          break;
-        case '/recycle':
-          curType = 'recycle';
-          break;
-      }
-      return curType;
-    },
-    // ------------------------------------------------
-    copy: function (data: any) {
-      return JSON.parse(JSON.stringify(data));
-    },
-    setMode: function (mode: string) {
-      this.mode = mode;
-      localStorage.setItem('toshokan_directory_mode', mode);
     },
   },
 })

@@ -72,6 +72,7 @@
     :mode="mode"
     :type="type"
     :query="query"
+    @set-current="setCurrentDir"
   ></directory-layout>
 </template>
 
@@ -166,54 +167,6 @@
     }
   }
 }
-.content_directory {
-  $lineHeight: $fontSize*2;
-  //padding: $fontSize*0.25;
-  &.detail {
-    columns: 4;
-    @media (max-width: $narrowWidth) {
-      columns: 3;
-    }
-    @media (max-width: $tabletWidth) {
-      columns: 2;
-    }
-    @media (max-width: $mobileWidth) {
-      columns: 1;
-    }
-    column-span: none;
-    //display: flex;
-    //flex-wrap: wrap;
-    //justify-content: space-between;
-    > .item {
-      break-inside: avoid;
-    }
-  }
-  &.img {
-    //display: flex;
-    //flex-wrap: wrap;
-    //justify-content: space-around;
-    columns: 6;
-    @media (max-width: $narrowWidth) {
-      columns: 5;
-    }
-    @media (max-width: $tabletWidth) {
-      columns: 3;
-    }
-    @media (max-width: $mobileWidth) {
-      columns: 2;
-    }
-    > .item {
-      break-inside: avoid;
-    }
-  }
-  &.text {
-    display: table;
-    width: 100%;
-    //flex-direction: column;
-    //flex-wrap: wrap;
-    //justify-content: start;
-  }
-}
 </style>
 
 <script lang="ts">
@@ -223,29 +176,26 @@ import fileListDemo from '@/demo/getFileList';
 import {ModalCreatorConfig} from '@/lib/ModalLib';
 import {NodeItem} from '@/struct';
 import DirectoryLayout from '@/components/DirectoryLayout.vue';
+import {nodeListFields} from '@/columns';
 
 @Options({
   components: {
     DirectoryLayout,
-    DirectoryItem
+    DirectoryItem,
   },
   data: function () {
     return {
-      crumb: [],
       type: 'directory',
       mode: '',
       query: {
-        id: '0',
+        id: 0,
         title: '',
         type: 'any',
         sort: 'id_asc',
-        tag_id: '0',
-        is_fav: '0',
+        tag: 0,
         // is_file: false,
-      },
-      page_size: 0,
+      } as nodeListFields,
       cur_dir: {} as NodeItem,
-      list: [] as Array<NodeItem>,
     };
   },
   created: function () {
@@ -253,7 +203,7 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
     this.type = this.getType(this.$route.path);
     this.query = this.$util.copy(this.$route.query);
     //
-    this.fetch();
+    // this.fetch();
   },
   watch: {
     $route: function (to, from) {
@@ -261,41 +211,12 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
       if (!type) return;
       this.type = type;
       this.query = this.$util.copy(to.query);
-      //
-      this.fetch();
     }
   },
   mounted: function () {
     return '';
   },
   methods: {
-    fetch: async function () {
-      console.debug('directory:fetch', JSON.stringify(this.query));
-      this.list = [];
-      /*this.crumb = [
-        {
-          id: '0',
-          type: 'node',
-          title: 'root',
-        },
-      ];*/
-      const queryExt = {} as { [key: string]: any };
-      if (this.type === 'recycle') queryExt.recycle = 1;
-      if (this.type === 'favourite') queryExt.favourite = 1;
-      const queryRes = await this.$query('file/list', Object.assign(queryExt, this.query));
-      if (queryRes === false) return;
-      this.list = queryRes.list;
-      // this.list = fileListDemo;
-      this.cur_dir = queryRes.cur_dir;
-      this.page_size = queryRes.size;
-
-      this.$store.commit(
-        'paginator/active',
-        {
-          count: this.page_size,
-          current: this.$route.query.page ? this.$route.query.page * 1 : 1
-        });
-    },
     search: function () {
       const query = this.$util.copy(this.query);
       this.$router.push({
@@ -372,6 +293,12 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
       } as ModalCreatorConfig;
       this.$store.commit('modal/push', addFolderModal);
     },
+    //
+    setCurrentDir: function (dirInfo: NodeItem) {
+      console.info(dirInfo);
+      this.cur_dir = dirInfo;
+    },
+    //
     go: function (type: string, meta: any) {
       console.debug(arguments,);
       // return;
@@ -400,9 +327,9 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
         return;
       }
       console.info('call detail', this.$route.query)
-      const queryExt = this.$util.copy(this.$route.query) as { [key: string]: any };
-      if (this.type === 'recycle') queryExt.recycle = 1;
-      if (this.type === 'favourite') queryExt.favourite = 1;
+      const queryExt = this.$util.copy(this.$route.query) as nodeListFields;
+      if (this.type === 'recycle') queryExt.filter = 'recycle';
+      else if (this.type === 'favourite') queryExt.filter = 'favourite';
       const openFileModal = {
         title: 'file detail',
         key: 'file_detail',
@@ -428,12 +355,6 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
       } as ModalCreatorConfig;
       this.$store.commit('modal/push', openFileModal);
     },
-    delFile: function (index: number) {
-      console.debug(index, arguments)
-      if (this.list[index]) {
-        this.list.splice(index, 1);
-      }
-    },
     // ------------------------------------------------
     getType: function (path: string) {
       // console.debug(to);
@@ -455,9 +376,6 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
       return curType;
     },
     // ------------------------------------------------
-    copy: function (data: any) {
-      return JSON.parse(JSON.stringify(data));
-    },
     setMode: function (mode: string) {
       this.mode = mode;
       localStorage.setItem('toshokan_directory_mode', mode);

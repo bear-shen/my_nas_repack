@@ -72,9 +72,9 @@
   <directory-layout
     :mode="mode"
     :type="type"
-    :query="query"
-    @set-current="setCurrentDir"
+    :list="list"
     @go="go(...$event)"
+    @delete="delFile(...$event)"
   ></directory-layout>
 </template>
 
@@ -197,7 +197,9 @@ import {nodeListFields} from '@/columns';
         tag: 0,
         // is_file: false,
       } as nodeListFields,
+      page_size: 0,
       cur_dir: {} as NodeItem,
+      list: [] as Array<NodeItem>,
     };
   },
   created: function () {
@@ -213,12 +215,43 @@ import {nodeListFields} from '@/columns';
       if (!type) return;
       this.type = type;
       this.query = this.$util.copy(to.query);
+      this.fetch();
     }
   },
   mounted: function () {
-    return '';
+    this.fetch();
   },
   methods: {
+    fetch: async function () {
+      console.debug('directory:fetch', JSON.stringify(this.query));
+      this.list = [];
+      /*this.crumb = [
+        {
+          id: '0',
+          type: 'node',
+          title: 'root',
+        },
+      ];*/
+      const queryExt = {} as nodeListFields;
+      if (this.type === 'recycle') queryExt.filter = 'recycle';
+      else if (this.type === 'favourite') queryExt.filter = 'favourite';
+      queryExt.flag = ['tag', 'file'];
+      const queryRes = await this.$query('file/list', Object.assign(queryExt, this.query));
+      if (queryRes === false) return;
+      this.list = queryRes.list;
+      // this.list = fileListDemo;
+      this.cur_dir = queryRes.cur_dir;
+      // this.$emit('set-current', queryRes.cur_dir);
+      // this.cur_dir = queryRes.cur_dir;
+      this.page_size = queryRes.size;
+
+      this.$store.commit(
+        'paginator/active',
+        {
+          count: this.page_size,
+          current: this.$route.query.page ? this.$route.query.page * 1 : 1
+        });
+    },
     search: function () {
       const query = this.$util.copy(this.query);
       this.$router.push({
@@ -296,10 +329,10 @@ import {nodeListFields} from '@/columns';
       this.$store.commit('modal/push', addFolderModal);
     },
     //
-    setCurrentDir: function (dirInfo: NodeItem) {
-      console.info(dirInfo);
-      this.cur_dir = dirInfo;
-    },
+    // setCurrentDir: function (dirInfo: NodeItem) {
+    //   console.info(dirInfo);
+    //   this.cur_dir = dirInfo;
+    // },
     //
     go: function (type: string, meta: any) {
       console.debug(arguments,);
@@ -356,6 +389,12 @@ import {nodeListFields} from '@/columns';
         },*/
       } as ModalCreatorConfig;
       this.$store.commit('modal/push', openFileModal);
+    },
+    delFile: function (index: number) {
+      console.debug(index, arguments)
+      if (this.list[index]) {
+        this.list.splice(index, 1);
+      }
     },
     // ------------------------------------------------
     getType: function (path: string) {

@@ -1,12 +1,12 @@
 <template>
   <div class="content_body content_media">
     <!--    -->
-    <div class="media_nav" v-if="curDir">
+    <div class="media_nav" v-if="cur_dir">
       <div
-        v-for="(item,index) in dirList" :key="`media_nav_${index}`"
+        v-for="(item,index) in dir_list" :key="`media_nav_${index}`"
         @click="go(index)"
         :class="{
-          active:item.id===curDir.id&&item.target_type===curDir.target_type
+          active:item.id===cur_dir.id&&item.target_type===cur_dir.target_type
         }"
       >
         <div class="title" v-html="item.title"></div>
@@ -14,6 +14,7 @@
       </div>
     </div>
     <directory-layout
+      v-if="cur_dir"
       :mode="'img'"
       :type="'directory'"
       :query="query"
@@ -92,17 +93,23 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
   },
   data: function () {
     return {
-      curDir: null as unknown as NodeItem,
-      dirList: [] as NodeItem[],
+      cur_dir: null as unknown as NodeItem & {
+        target_type: FileType | 'any',
+        edit: boolean,
+      },
+      dir_list: [] as Array<NodeItem & {
+        target_type: FileType | 'any',
+        edit: boolean,
+      }>,
       type: 'directory',
       mode: '',
+      dir_query: {},
       query: {
         id: 0,
         title: '',
         type: 'any',
-        sort: 'id_asc',
-        tag: 0,
         cascade: 1,
+        flag: ['file', 'tag', 'tree'],
         // is_file: false,
       } as nodeListFields,
     };
@@ -120,13 +127,17 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
         name: 'media_folder',
       });
       if (res === false) return;
-      this.dirList = res.value;
-      if (this.dirList.length) {
+      this.dir_list = res.value;
+      if (this.dir_list.length) {
         this.go(0);
       }
     },
     go: function (index: number): any {
-      this.curDir = this.dirList[index];
+      const dir = this.dir_list[index];
+      this.query.id = dir.id;
+      this.query.type = dir.target_type;
+      this.cur_dir = dir;
+      this.query = this.$util.copy(this.query);
       // return index;
     },
   },

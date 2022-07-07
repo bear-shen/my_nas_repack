@@ -6,6 +6,8 @@
       @delete="delFile(index)"
       @go="go(...$event)"
     ></directory-item>
+    <!--    @go="$emit('go',$event)"-->
+    <!--    @go="go(...$event)"-->
   </div>
 </template>
 
@@ -90,6 +92,7 @@ import {nodeListFields} from '@/columns';
   },
   watch: {
     query: function (to, from) {
+      console.info('query modified');
       this.fetch();
     },
     // $route: function (to, from) {
@@ -130,6 +133,7 @@ import {nodeListFields} from '@/columns';
           current: this.$route.query.page ? this.$route.query.page * 1 : 1
         });
     },
+    //
     go: function (type: string, meta: any) {
       console.debug(arguments,);
       // return;

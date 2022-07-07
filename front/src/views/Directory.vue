@@ -74,6 +74,7 @@
     :type="type"
     :query="query"
     @set-current="setCurrentDir"
+    @go="go(...$event)"
   ></directory-layout>
 </template>
 

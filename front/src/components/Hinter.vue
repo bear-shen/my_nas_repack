@@ -26,7 +26,8 @@
     background-color: map-get($colors, hinter_bk);
     //top: $fontSize*1.5;
     max-height: $fontSize*10;
-    width: $fontSize*15;
+    min-width: $fontSize*15;
+    max-width: 70vw;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: $hinterIndex;

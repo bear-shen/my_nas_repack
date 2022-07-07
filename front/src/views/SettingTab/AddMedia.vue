@@ -27,7 +27,11 @@
         </div>
       </template>
       <template v-else>
-        <div class="title">{{ item.tree ? '/ ' + item.tree.title.join(' / ') : '' }} / {{ item.title }}</div>
+
+        <div class="title">
+          <input type="text" v-model="item.index" class="index" @blur="triggerSort(index)">
+          {{ item.tree ? '/ ' + item.tree.title.join(' / ') : '' }} / {{ item.title }}
+        </div>
         <div class="type">{{ item.target_type }}</div>
         <div class="operate">
           <button @click="editItem(index)">edit</button>
@@ -65,11 +69,14 @@
       padding: 0 $fontSize/2;
     }
     .operate {}
+    .index {
+      width: $fontSize*2.5;
+    }
   }
   > div:nth-child(2n-1) {
     background-color: map-get($colors, list_l2_bk);
   }
-  .hinter input {
+  input {
     padding: 0 $fontSize/2;
   }
 }
@@ -96,6 +103,7 @@ import {FileType, nodeListFields} from '@/columns';
     return {
       list: [] as Array<NodeItem & {
         target_type: FileType | 'any',
+        index: number,
         edit: boolean,
       }>,
     };
@@ -175,6 +183,24 @@ import {FileType, nodeListFields} from '@/columns';
         title: '',
         target_type: 'image',
         edit: true,
+      });
+    },
+    triggerSort: async function (index: number) {
+      console.info('this.triggerSort', index);
+      this.list.sort((
+        a: NodeItem & { target_type: FileType | 'any', index: number, edit: boolean },
+        b: NodeItem & { target_type: FileType | 'any', index: number, edit: boolean }
+      ) => {
+        console.info(a.index, b.index);
+        return a.index - b.index;
+      });
+      console.info(this.list);
+      for (let i1 = 0; i1 < this.list.length; i1++) {
+        this.list[i1].index = i1;
+      }
+      const res = await this.$query('config/set', {
+        name: 'media_folder',
+        value: JSON.stringify(this.list),
       });
     },
     dir_hinter_fetch: async function (key: string) {

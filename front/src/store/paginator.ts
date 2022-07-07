@@ -69,7 +69,9 @@ export default {
     // focusDOM: document.body,
   },
   mutations: {
-    active: function (state, payload: { count: number, current?: number, size?: number, change?: ((to: number) => any) }) {
+    active: function (state, payload: {
+      count: number, current?: number, size?: number, change?: ((to: number) => any)
+    }) {
       console.debug('active', payload);
       state.active = true;
       state.change = payload.change ? payload.change : null;

@@ -1,4 +1,5 @@
 /**
+ * @todo 绑定数据这块还是要改改
  * ------------------ select ------------------
  * SELECT
  *     [ALL | DISTINCT | DISTINCTROW ]

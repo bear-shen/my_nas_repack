@@ -80,7 +80,7 @@ import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor, ModalCreatorConfig} from '@/lib/ModalLib';
 import {ModalMeta, NodeItem} from '@/struct';
 import Hinter from '@/components/Hinter.vue';
-import {FileType} from '@/columns';
+import {FileType, nodeListFields} from '@/columns';
 // import ContentEditable from '@/components/ContentEditable.vue';
 
 @Options({
@@ -180,8 +180,8 @@ import {FileType} from '@/columns';
     dir_hinter_fetch: async function (key: string) {
       const queryRes = await this.$query(
         'file/list', {
-          title: key, type: 'directory', total: 1, level: 'index',
-        });
+          title: key, type: 'directory', total: 1, flag: ['tree'],
+        } as nodeListFields);
       if (queryRes === false) return [];
       // console.debug(fileList);
       return queryRes.list;

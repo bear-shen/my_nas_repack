@@ -1,7 +1,7 @@
 <template>
   <div class="content_body content_media">
     <!--    -->
-    <div class="media_nav">
+    <div class="media_nav" v-if="curDir">
       <div
         v-for="(item,index) in dirList" :key="`media_nav_${index}`"
         @click="go(index)"
@@ -92,6 +92,8 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
   },
   data: function () {
     return {
+      curDir: null as unknown as NodeItem,
+      dirList: [] as NodeItem[],
       type: 'directory',
       mode: '',
       query: {
@@ -119,6 +121,9 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
       });
       if (res === false) return;
       this.dirList = res.value;
+      if (this.dirList.length) {
+        this.go(0);
+      }
     },
     go: function (index: number): any {
       this.curDir = this.dirList[index];

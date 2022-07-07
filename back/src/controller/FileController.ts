@@ -282,14 +282,11 @@ class FileController extends BaseController {
         )
             model.where('id_parent', 0);
         //
-        if (fields.title) {
-            let tt = fields.title as string;
+        let tt = fields.title as string;
+        if (tt) {
             tt = `${tt.trim()}*`.replace(' ', '* ');
             model
-                .whereRaw('match (`index_node`) against ( ? in boolean mode)', tt)
-                //索引不要做布尔模式，排序好看一点，以及注意因为这里涉及到绑定顺序，所以应该写在所有可能的数据绑定后
-                .order('match (`index_node`) against ( ? )', 'desc');
-            model._dataset.binds.push(tt);
+                .whereRaw('match (`index_node`) against ( ? in boolean mode)', tt);
         }
         //
         if (fields.type) {
@@ -310,47 +307,10 @@ class FileController extends BaseController {
             if (fType) model.where('type', fType);
         }
         //
-        switch (fields.sort) {
-            default:
-            case 'id_asc':
-                model.order('id', 'asc');
-                break;
-            case 'id_desc':
-                model.order('id', 'desc');
-                break;
-            case 'name_asc':
-                model.order('title', 'asc');
-                break;
-            case 'name_desc':
-                model.order('title', 'desc');
-                break;
-            case 'crt_asc':
-                model.order('time_create', 'asc');
-                break;
-            case 'crt_desc':
-                model.order('time_create', 'desc');
-                break;
-            case 'upd_asc':
-                model.order('time_update', 'asc');
-                break;
-            case 'upd_desc':
-                model.order('time_update', 'desc');
-                break;
-        }
-        if (fields.cascade) {
-            model
-                .order('list_node')
-                .order('title')
-            ;
-        }
-        //
         if (fields.tag)
             model.whereRaw(
                 'find_in_set( ? , list_tag_id)', fields.tag
             );
-        if (!fields.total) {
-            model.page(page);
-        }
         //
         if (data.uid) {
             const user = await (new UserModel).where('id', data.uid).first();
@@ -386,8 +346,53 @@ class FileController extends BaseController {
             // }
         }
         //
+        if (tt) {
+            model
+                //索引不要做布尔模式，排序好看一点，以及注意因为这里涉及到绑定顺序，所以应该写在所有可能的数据绑定后
+                .order('match (`index_node`) against ( ? )', 'desc');
+            model._dataset.binds.push(tt);
+        }
+        switch (fields.sort) {
+            default:
+            case 'id_asc':
+                model.order('id', 'asc');
+                break;
+            case 'id_desc':
+                model.order('id', 'desc');
+                break;
+            case 'name_asc':
+                model.order('title', 'asc');
+                break;
+            case 'name_desc':
+                model.order('title', 'desc');
+                break;
+            case 'crt_asc':
+                model.order('time_create', 'asc');
+                break;
+            case 'crt_desc':
+                model.order('time_create', 'desc');
+                break;
+            case 'upd_asc':
+                model.order('time_update', 'asc');
+                break;
+            case 'upd_desc':
+                model.order('time_update', 'desc');
+                break;
+        }
+        if (fields.cascade) {
+            model
+                .order('list_node')
+                .order('title')
+            ;
+        }
+        //
+        if (!fields.total) {
+            model.page(page);
+        }
+        //
         const list = await model.select();
         const size = await model.count();
+        console.info(list);
         //
         let parent: NodeCol;
         if (isDirectory) {
@@ -542,7 +547,7 @@ async function nodeProcessor(
         }
         if (nList[i].list_node) treeNodeIdArr.push(...nList[i].list_node);
         if (nList[i].list_tag_id) tagIdArr.push(...nList[i].list_tag_id);
-        nList[i].is_file = nList[i].type === 'directory';
+        nList[i].is_file = nList[i].type !== 'directory';
     }
     treeNodeIdArr = Array.from(new Set<number>(treeNodeIdArr));
     // console.info(tagIdArr);

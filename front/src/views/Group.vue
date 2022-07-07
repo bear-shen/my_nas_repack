@@ -192,6 +192,7 @@ import fileList from '@/demo/getFileList';
 import Hinter from '@/components/Hinter.vue';
 import UserListInGroup from '@/components/UserListInGroup.vue';
 import {NodeItem} from '@/struct';
+import {nodeListFields} from '@/columns';
 
 @Options({
   components: {Hinter, UserListInGroup,},
@@ -282,8 +283,8 @@ import {NodeItem} from '@/struct';
     dir_hinter_fetch: async function (key: string) {
       const queryRes = await this.$query(
         'file/list', {
-          title: key, type: 'directory', total: 1, level: 'index',
-        });
+          title: key, type: 'directory', total: 1, flag: ['tree'],
+        } as nodeListFields);
       if (queryRes === false) return;
       // console.debug(fileList);
       return queryRes.list;

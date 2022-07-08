@@ -59,25 +59,27 @@ export default {
   namespaced: true,
   state: {
     active: false,
-    count: 0,
-    current: 0,
-    //
-    size: 100,
-    listSize: 9,
+    count: 0,//分页的总数，分页内不考虑每页有多少数据
+    current: 0,//当前的分页
+    // size: 5,
+    listSize: 9,//分页标签的数量
     list: Array<{ no: number, active: boolean }>(),
     change: ((to: number) => null),
     // focusDOM: document.body,
   },
   mutations: {
     active: function (state, payload: {
-      count: number, current?: number, size?: number, change?: ((to: number) => any)
+      count: number,
+      current?: number,
+      // size?: number,
+      change?: ((to: number) => any)
     }) {
       console.debug('active', payload);
       state.active = true;
       state.change = payload.change ? payload.change : null;
       state.count = payload.count;
       state.current = payload.current ? payload.current : 1;
-      state.size = payload.size ? payload.size : 100;
+      // state.size = payload.size ? payload.size : 100;
       state.list = [];
       genPageNo(state);
     },

@@ -102,3 +102,9 @@ interface BrowserMeta {
     prev: boolean;
   }
 }
+
+type MediaDirDefinition = NodeItem & {
+  target_type: FileType | 'any',
+  index: number,
+  edit: boolean,
+}

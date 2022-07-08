@@ -392,7 +392,7 @@ class FileController extends BaseController {
         //
         const list = await model.select();
         const size = await model.count();
-        console.info(list);
+        // console.info(list);
         //
         let parent: NodeCol;
         if (isDirectory) {
@@ -428,7 +428,8 @@ class FileController extends BaseController {
                 )
             ),
             page: page,
-            size: Math.ceil(size / 100),
+            // size: Math.ceil(size / 100),
+            size: size,
         };
     }
 

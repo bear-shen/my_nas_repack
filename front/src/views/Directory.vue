@@ -71,7 +71,6 @@
   </div>
   <directory-layout
     :mode="mode"
-    :type="type"
     :list="list"
     @go="go(...$event)"
     @delete="delFile(...$event)"
@@ -197,7 +196,7 @@ import {nodeListFields} from '@/columns';
         tag: 0,
         // is_file: false,
       } as nodeListFields,
-      page_size: 0,
+      count: 0,
       cur_dir: {} as NodeItem,
       list: [] as Array<NodeItem>,
     };
@@ -243,12 +242,12 @@ import {nodeListFields} from '@/columns';
       this.cur_dir = queryRes.cur_dir;
       // this.$emit('set-current', queryRes.cur_dir);
       // this.cur_dir = queryRes.cur_dir;
-      this.page_size = queryRes.size;
+      this.count = queryRes.size;
 
       this.$store.commit(
         'paginator/active',
         {
-          count: this.page_size,
+          count: Math.ceil(this.count / 100),
           current: this.$route.query.page ? this.$route.query.page * 1 : 1
         });
     },

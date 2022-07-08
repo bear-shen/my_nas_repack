@@ -85,7 +85,7 @@
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component'
 import {Modal as ModalConstructor, ModalCreatorConfig} from '@/lib/ModalLib';
-import {ModalMeta, NodeItem} from '@/struct';
+import {ModalMeta, NodeItem, MediaDirDefinition} from '@/struct';
 import Hinter from '@/components/Hinter.vue';
 import {FileType, nodeListFields} from '@/columns';
 // import ContentEditable from '@/components/ContentEditable.vue';
@@ -101,11 +101,7 @@ import {FileType, nodeListFields} from '@/columns';
   },
   data: function () {
     return {
-      list: [] as Array<NodeItem & {
-        target_type: FileType | 'any',
-        index: number,
-        edit: boolean,
-      }>,
+      list: [] as Array<MediaDirDefinition>,
     };
   },
   created: function () {
@@ -188,8 +184,8 @@ import {FileType, nodeListFields} from '@/columns';
     triggerSort: async function (index: number) {
       console.info('this.triggerSort', index);
       this.list.sort((
-        a: NodeItem & { target_type: FileType | 'any', index: number, edit: boolean },
-        b: NodeItem & { target_type: FileType | 'any', index: number, edit: boolean }
+        a: MediaDirDefinition,
+        b: MediaDirDefinition
       ) => {
         console.info(a.index, b.index);
         return a.index - b.index;

@@ -265,6 +265,10 @@ class FileController extends BaseController {
             .where('status', fields.filter === 'recycle' ? 0 : 1);
         //
         const parentId = parseInt(fields.id as string);
+        //总之改成含有标题和tag大情况下强制使用cascade
+        if (fields.title || fields.tag) {
+            fields.cascade = 1;
+        }
         if (fields.cascade) {
             if (parentId) {
                 model.whereRaw(
@@ -273,14 +277,15 @@ class FileController extends BaseController {
             }
         } else if (parentId === 0) {
             model.where('id_parent', 0);
-        } else if (parentId)
+        } else if (parentId) {
             model.where('id_parent', parentId);
-        else if (
-            //不太确定是啥情况下的判断了
+        }
+        //不太确定是啥情况下的判断了，但是总之级联还是有用的
+        /*else if (
             !(fields.title || fields.tag)
             && isDirectory
         )
-            model.where('id_parent', 0);
+            model.where('id_parent', 0);*/
         //
         let tt = fields.title as string;
         if (tt) {

@@ -1,12 +1,12 @@
 import {createRouter, createWebHashHistory, RouteRecordName, RouteRecordRaw} from 'vue-router'
-import Home from './views/Home.vue'
+import Home from '@/views/Home.vue'
 //
-import Directory from './views/Directory.vue'
-import Setting from './views/Setting.vue'
-import Tag from './views/Tag.vue'
+import Directory from '@/views/Directory.vue'
+import Setting from '@/views/Setting.vue'
+import Tag from '@/views/Tag.vue'
 // import User from '../views/User.vue'
-import Media from './views/Media.vue';
-import Group from './views/Group.vue';
+import Media from '@/views/Media.vue';
+import Group from '@/views/Group.vue';
 import Local from '@/views/Local.vue';
 
 const routes: Array<RouteRecordRaw> = [

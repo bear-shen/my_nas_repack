@@ -71,10 +71,13 @@
   </div>
   <directory-layout
     :mode="mode"
-    :list="list"
-    @go="go(...$event)"
-    @delete="delFile(...$event)"
+    :query-ext="query"
+    @set-cur-dir="setCurDir"
   ></directory-layout>
+  <!--  :type="filter"-->
+  <!--  :list="list"-->
+  <!--  @go="go(...$event)"-->
+  <!--  @delete="delFile(...$event)"-->
 </template>
 
 <style lang="scss" scoped>
@@ -186,73 +189,61 @@ import {nodeListFields} from '@/columns';
   },
   data: function () {
     return {
-      type: 'directory',
+      filter: 'directory',
       mode: '',
       query: {
-        id: 0,
+        // id: 0,
         title: '',
         type: 'any',
         sort: 'id_asc',
         tag: 0,
+        filter: 'normal',
         // is_file: false,
       } as nodeListFields,
-      count: 0,
       cur_dir: {} as NodeItem,
-      list: [] as Array<NodeItem>,
     };
   },
   created: function () {
     this.getMode();
-    this.type = this.getType(this.$route.path);
-    this.query = this.$util.copy(this.$route.query);
+    this.filter = this.getFilter(this.$route.path);
+    for (const key in this.query) {
+      if (!Object.prototype.hasOwnProperty.call(this.query, key)) continue;
+      // this.query[key] = this.$route.query[key] || this.query_origin[key] || '';
+      this.query[key] = this.$route.query[key] || '';
+    }
+    if (!this.query.id && !(this.query.title || this.query.tag)) {
+      this.query.id = 0;
+    }
+    // this.query = this.$util.copy(this.query);
     //
     // this.fetch();
   },
   watch: {
     $route: function (to, from) {
-      const type = this.getType(to.path);
+      const type = this.getFilter(to.path);
       if (!type) return;
-      this.type = type;
-      this.query = this.$util.copy(to.query);
-      this.fetch();
+      this.filter = type;
+      for (const key in this.query) {
+        if (!Object.prototype.hasOwnProperty.call(this.query, key)) continue;
+        // this.query[key] = this.$route.query[key] || this.query_origin[key] || '';
+        this.query[key] = this.$route.query[key] || '';
+      }
+      if (!this.query.id && !(this.query.title || this.query.tag)) {
+        this.query.id = 0;
+      }
+      // this.query = this.$util.copy(this.query);
+      // this.fetch();
     }
   },
   mounted: function () {
-    this.fetch();
+    // this.fetch();
   },
   methods: {
-    fetch: async function () {
-      console.debug('directory:fetch', JSON.stringify(this.query));
-      this.list = [];
-      /*this.crumb = [
-        {
-          id: '0',
-          type: 'node',
-          title: 'root',
-        },
-      ];*/
-      const queryExt = {} as nodeListFields;
-      if (this.type === 'recycle') queryExt.filter = 'recycle';
-      else if (this.type === 'favourite') queryExt.filter = 'favourite';
-      queryExt.flag = ['tag', 'file'];
-      const queryRes = await this.$query('file/list', Object.assign(queryExt, this.query));
-      if (queryRes === false) return;
-      this.list = queryRes.list;
-      // this.list = fileListDemo;
-      this.cur_dir = queryRes.cur_dir;
-      // this.$emit('set-current', queryRes.cur_dir);
-      // this.cur_dir = queryRes.cur_dir;
-      this.count = queryRes.size;
-
-      this.$store.commit(
-        'paginator/active',
-        {
-          count: Math.ceil(this.count / 100),
-          current: this.$route.query.page ? this.$route.query.page * 1 : 1
-        });
-    },
     search: function () {
-      const query = this.$util.copy(this.query);
+      const query = this.$util.copy(this.query) as nodeListFields;
+      if (!query.id && !(query.title || query.tag)) {
+        query.id = 0;
+      }
       this.$router.push({
         query: query,
         path: this.$route.path,
@@ -332,7 +323,39 @@ import {nodeListFields} from '@/columns';
     //   console.info(dirInfo);
     //   this.cur_dir = dirInfo;
     // },
-    //
+    // ------------------------------------------------
+    getFilter: function (path: string) {
+      //这边不好设置默认值，因为牵涉到路由跳转后的查询
+      // console.debug(to);
+      let curFilter: string | boolean = false;
+      switch (path) {
+        case '/favourite':
+          curFilter = 'favourite';
+          break;
+        case '/share':
+          curFilter = 'share';
+          break;
+        case '/recycle':
+          curFilter = 'recycle';
+          break;
+        case '/':
+          // default:
+          curFilter = 'directory';
+          break;
+      }
+      return curFilter;
+    },
+    // ------------------------------------------------
+    setMode: function (mode: string) {
+      this.mode = mode;
+      localStorage.setItem('toshokan_directory_mode', mode);
+    },
+    getMode: function () {
+      let cur = localStorage.getItem('toshokan_directory_mode');
+      if (!cur) cur = 'detail';
+      this.mode = cur;
+    },
+    // ------------------------------------------------
     go: function (type: string, meta: any) {
       console.debug(arguments,);
       // return;
@@ -389,41 +412,10 @@ import {nodeListFields} from '@/columns';
       } as ModalCreatorConfig;
       this.$store.commit('modal/push', openFileModal);
     },
-    delFile: function (index: number) {
-      console.debug(index, arguments)
-      if (this.list[index]) {
-        this.list.splice(index, 1);
-      }
-    },
     // ------------------------------------------------
-    getType: function (path: string) {
-      // console.debug(to);
-      let curType: string | boolean = false;
-      switch (path) {
-        case '/':
-          curType = 'directory';
-          break;
-        case '/favourite':
-          curType = 'favourite';
-          break;
-        case '/share':
-          curType = 'share';
-          break;
-        case '/recycle':
-          curType = 'recycle';
-          break;
-      }
-      return curType;
-    },
-    // ------------------------------------------------
-    setMode: function (mode: string) {
-      this.mode = mode;
-      localStorage.setItem('toshokan_directory_mode', mode);
-    },
-    getMode: function () {
-      let cur = localStorage.getItem('toshokan_directory_mode');
-      if (!cur) cur = 'detail';
-      this.mode = cur;
+    setCurDir: function (curDir: NodeItem) {
+      console.info(curDir);
+      this.cur_dir = curDir;
     },
   },
 })

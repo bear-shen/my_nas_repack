@@ -205,7 +205,6 @@ import {nodeListFields} from '@/columns';
   },
   created: function () {
     this.getMode();
-    this.filter = this.getFilter(this.$route.path);
     for (const key in this.query) {
       if (!Object.prototype.hasOwnProperty.call(this.query, key)) continue;
       // this.query[key] = this.$route.query[key] || this.query_origin[key] || '';
@@ -214,15 +213,16 @@ import {nodeListFields} from '@/columns';
     if (!this.query.id && !(this.query.title || this.query.tag)) {
       this.query.id = 0;
     }
-    // this.query = this.$util.copy(this.query);
+    console.warn(JSON.stringify(this.query));
+    this.query.filter = this.getFilter(this.$route.path);
+    this.query = this.$util.copy(this.query);
     //
     // this.fetch();
   },
   watch: {
     $route: function (to, from) {
-      const type = this.getFilter(to.path);
-      if (!type) return;
-      this.filter = type;
+      const filter = this.getFilter(to.path);
+      if (!filter) return;
       for (const key in this.query) {
         if (!Object.prototype.hasOwnProperty.call(this.query, key)) continue;
         // this.query[key] = this.$route.query[key] || this.query_origin[key] || '';
@@ -231,7 +231,9 @@ import {nodeListFields} from '@/columns';
       if (!this.query.id && !(this.query.title || this.query.tag)) {
         this.query.id = 0;
       }
-      // this.query = this.$util.copy(this.query);
+      console.warn(JSON.stringify(this.query));
+      this.query.filter = filter;
+      this.query = this.$util.copy(this.query);
       // this.fetch();
     }
   },
@@ -414,7 +416,7 @@ import {nodeListFields} from '@/columns';
     },
     // ------------------------------------------------
     setCurDir: function (curDir: NodeItem) {
-      console.info(curDir);
+      // console.info(curDir);
       this.cur_dir = curDir;
     },
   },

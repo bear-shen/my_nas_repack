@@ -93,7 +93,6 @@ import {nodeListFields} from '@/columns';
       query: {
         page: 0,
         flag: ['file', 'tag'],
-
       } as nodeListFields,
       list: [] as Array<NodeItem>,
     };
@@ -103,10 +102,7 @@ import {nodeListFields} from '@/columns';
   },
   watch: {
     queryExt: function (to, from) {
-      console.info(JSON.stringify(to));
-      this.fetch();
-    },
-    $route: function (to, from) {
+      console.info('DirectoryLayout queryExt:', to, from);
       for (const key in this.query) {
         if (!Object.prototype.hasOwnProperty.call(this.query, key)) continue;
         // this.query[key] = this.$route.query[key] || this.query_origin[key] || '';
@@ -114,8 +110,23 @@ import {nodeListFields} from '@/columns';
       }
       this.fetch();
     },
+    /*$route: function (to, from) {
+      //path不同的时候反正会重新
+      console.info('DirectoryLayout route:', to, from);
+      if (to.path !== from.path) return;
+      for (const key in this.query) {
+        if (!Object.prototype.hasOwnProperty.call(this.query, key)) continue;
+        // this.query[key] = this.$route.query[key] || this.query_origin[key] || '';
+        this.query[key] = this.$route.query[key] || '';
+      }
+      this.fetch();
+    },*/
+  },
+  beforeUnmount: function () {
+    console.info('DirectoryLayout unmounted',);
   },
   mounted: function () {
+    console.info('DirectoryLayout mounted',);
     for (const key in this.query) {
       if (!Object.prototype.hasOwnProperty.call(this.query, key)) continue;
       // this.query[key] = this.$route.query[key] || this.query_origin[key] || '';
@@ -130,7 +141,7 @@ import {nodeListFields} from '@/columns';
       const query =
         Object.assign(
           Object.assign(
-            {}, this.$route.query
+            {}, this.query
           ), this.queryExt
         ) as nodeListFields;
       /*console.info(

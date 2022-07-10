@@ -274,20 +274,25 @@ import {nodeListFields} from '@/columns';
       const queryRes = await this.$query('file/list', query);
       if (queryRes === false) return;
       this.list = queryRes.list;
+      console.warn(queryRes.list);
       // this.list = fileListDemo;
       for (let i1 = 0; i1 < this.list.length; i1++) {
         if (!(this.modalMeta as ModalMeta).data.item) continue;
         if ((this.modalMeta as ModalMeta).data.item.id !== this.list[i1].id) continue;
         this.cur = i1;
         this.item = this.list[i1];
-        (this.modalMeta as ModalMeta).modal.base.title = this.item.title;
-        if (this.$store.state.browser.config.media_play_mode === 'queue') {
-          if (i1 !== 0) this.has_prev = true;
-          if (i1 < this.list.length - 1) this.has_next = true;
-        } else {
-          this.has_prev = true;
-          this.has_next = true;
-        }
+      }
+      if (this.list.length && !this.item) {
+        this.cur = 0;
+        this.item = this.list[0];
+      }
+      (this.modalMeta as ModalMeta).modal.base.title = this.item.title;
+      if (this.$store.state.browser.config.media_play_mode === 'queue') {
+        if (this.cur !== 0) this.has_prev = true;
+        if (this.cur < this.list.length - 1) this.has_next = true;
+      } else {
+        this.has_prev = true;
+        this.has_next = true;
       }
     },
     init: function () {

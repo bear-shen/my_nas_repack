@@ -27,6 +27,7 @@
       <div class="operate">
         <!---->
         <button v-if="item.is_file" :class="['sysIcon','sysIcon_download',]" @click="op_download">DL</button>
+        <button v-if="!item.is_file" :class="['sysIcon','sysIcon_stack',]" @click="go('node',item,true)">IN</button>
         <button :class="['sysIcon','sysIcon_edit',{active:renaming},]" @click="op_rename">RN</button>
         <button :class="['sysIcon','sysIcon_folderopen',]" @click="op_move">MV</button>
         <button :class="['sysIcon','sysIcon_tag-o',{active:tagging},]" @click="op_tag">TAG</button>
@@ -336,8 +337,8 @@ import {ModalMeta, NodeItem, TagGroupItem} from '@/struct';
     // console.debug(this.$route.path);
   },
   methods: {
-    go: function (type: string, meta: any) {
-      this.$emit('go', [type, meta]);
+    go: function (type: string, meta: any, cascade: any) {
+      this.$emit('go', [type, meta, cascade]);
     },
     op_download: async function () {
       // console.info(this.item);

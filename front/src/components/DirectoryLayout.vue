@@ -178,7 +178,7 @@ import {nodeListFields} from '@/columns';
         });
     },
     //
-    go: function (type: string, meta: any) {
+    go: function (type: string, meta: any, cascade: any) {
       console.debug(arguments,);
       // return;
       switch (type) {
@@ -186,7 +186,7 @@ import {nodeListFields} from '@/columns';
           this.goTag(meta.id);
           break;
         case 'node':
-          this.goDetail(meta);
+          this.goDetail(meta, cascade);
           break;
       }
     },
@@ -199,9 +199,9 @@ import {nodeListFields} from '@/columns';
         ) as nodeListFields;
       this.$router.push({path: this.$route.path, query});
     },
-    goDetail: function (item: NodeItem) {
+    goDetail: function (item: NodeItem, cascade: boolean) {
       //注意：导航条上转入的时候只有文件id
-      if (!item.is_file) {
+      if (!cascade && !item.is_file) {
         const query = {} as nodeListFields;
         // const query = this.$util.copy(this.query);
         query.id = item.id;
@@ -211,6 +211,8 @@ import {nodeListFields} from '@/columns';
       }
       console.info('call detail', this.$route.query)
       const queryExt = this.$util.copy(this.queryExt) as nodeListFields;
+      if (cascade) queryExt.cascade = 1;
+      queryExt.type = 'file';
       const openFileModal = {
         title: 'file detail',
         key: 'file_detail',

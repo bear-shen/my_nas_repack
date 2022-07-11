@@ -153,6 +153,11 @@
       </template>
     </browser-base>
   </template>
+<!--  <div class="file_browser_list">
+    <div v-for="(node,index) in list" :key="`file_browser_list_${index}`">
+      {{ node.title }}
+    </div>
+  </div>-->
 </template>
 
 <style lang="scss">
@@ -184,6 +189,13 @@
       line-height: 1.25em;
     }
   }
+}
+.file_browser_list {
+  position: absolute;
+  left: 100%;
+  height: 100%;
+  @include smallScroll();
+  overflow: auto;
 }
 </style>
 

@@ -163,7 +163,7 @@ import DirectoryLayout from '@/components/DirectoryLayout.vue';
       this.query.type = dir.target_type;
       this.query.cascade = 1;
       this.query.sort = 'id_asc';
-      this.query.filter = 'normal';
+      this.query.filter = 'directory';
       this.cur_dir = dir;
     },
   },

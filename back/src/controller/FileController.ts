@@ -244,7 +244,7 @@ class FileController extends BaseController {
             tag: null,
             page: null,
             total: null,
-            filter: 'normal',
+            filter: 'directory',
             flag: null,
             cascade: null,
         } as nodeListFields, data.fields) as nodeListFields;
@@ -255,7 +255,7 @@ class FileController extends BaseController {
             fields.flag = [];
         }
         //
-        let isDirectory = fields.filter === 'normal';
+        let isDirectory = fields.filter === 'directory';
         let page = parseInt(fields.page as any);
         page = (page && page > 1) ? page : 1;
         fields.cascade = parseInt(fields.cascade as any);
@@ -399,9 +399,10 @@ class FileController extends BaseController {
         const size = await model.count();
         // console.info(list);
         //
+        console.info('parentId', parentId, isDirectory);
         let parent: NodeCol;
         if (isDirectory) {
-            if (parentId) {
+            if (parentId || parentId === 0) {
                 parent = await (new NodeModel).where('id', parentId).first();
             }
             if (parent) {

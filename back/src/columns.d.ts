@@ -143,6 +143,6 @@ export interface nodeListFields {
     page?: number
     total?: number
     cascade?: number
-    filter?: 'recycle' | 'normal' | 'favourite'
+    filter?: 'recycle' | 'directory' | 'favourite'
     flag?: Array<nodeDetailFlags>
 }

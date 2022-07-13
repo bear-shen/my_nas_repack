@@ -197,7 +197,7 @@ import {nodeListFields} from '@/columns';
         type: 'any',
         sort: 'id_asc',
         tag: 0,
-        filter: 'normal',
+        filter: 'directory',
         // is_file: false,
       } as nodeListFields,
       cur_dir: {} as NodeItem,

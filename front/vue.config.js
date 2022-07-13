@@ -23,7 +23,8 @@ module.exports          = {
   },
   devServer            : {
     // disableHostCheck: true,
-    port            : 8085
+    port            : 8085,
+    // https:true, //可以打通，但是总之没什么用
   },
   pages                : {
     index: {

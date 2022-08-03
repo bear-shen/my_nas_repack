@@ -95,19 +95,19 @@ function getRequestBody(req: IncomingMessage, res: ServerResponse): Promise<stri
         const length = req.headers["content-length"] ? Number.parseInt(req.headers["content-length"]) : 0;
         let wrote = 0;
         // const bodyBuffer = Buffer.alloc(length);
-        let reqTmpFilePath: string, rs: WriteStream;
+        let reqTmpFilePath: string, ws: WriteStream;
         if (length) {
             reqTmpFilePath = `${tmpPath}/${(new Date()).valueOf()}`;
-            rs = fs.createWriteStream(reqTmpFilePath);
+            ws = fs.createWriteStream(reqTmpFilePath, {encoding: "binary", highWaterMark: 32 * 1024 * 1024,});
         }
         req.on('data', async chunk => {
             if (chunk.constructor === String)
                 chunk = Buffer.from(chunk);
-            await rs.write(chunk);
+            await ws.write(chunk);
             wrote += chunk.length;
         });
         req.on('end', async () => {
-            if (rs) rs.destroy();
+            if (ws) ws.destroy();
             if (!length) return resolve(null);
             // console.info(reqTmpFilePath, rs, wrote);
             console.info(reqTmpFilePath);
